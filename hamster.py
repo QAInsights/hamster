@@ -3,9 +3,12 @@ import configparser
 import plistlib
 import os
 import re
+import sys
+from pathlib import Path
 
 configparser = configparser.ConfigParser()
-configparser.read('app.properties')
+properties_file_path = os.path.join(os.path.dirname(sys.argv[0]), 'app.properties')
+configparser.read(properties_file_path)
 
 jmeter_plist = configparser.get('JMETER', 'PLIST')
 jmeter_home = configparser.get('JMETER', 'HOME')
@@ -13,11 +16,46 @@ jmeter_path = jmeter_home + '/bin/jmeter'
 
 pattern = re.compile("recent_file_.*")
 
+
+# Function to update properties in app.properties
+def update_properties(properties):
+    for key, value in properties.items():
+        configparser['JMETER'][key] = value
+
+    with open(properties_file_path, 'w') as config_file:
+        configparser.write(config_file)
+
+
 class DynamicMenuApp(rumps.App):
     def __init__(self, title, menu_items):
         super(DynamicMenuApp, self).__init__(title, icon="hamster.png", quit_button='Quit')
-        self.menu = ['Just JMeter', None] + [rumps.MenuItem(item, callback=self.menu_callback) for item in menu_items] + [None, "About"] 
-        
+        self.menu = ['Just JMeter', None] + [rumps.MenuItem(item, callback=self.menu_callback) for item in menu_items] \
+                    + [None, 'View Config', 'Edit JMeter HOME', 'Edit JMeter PLIST'] + [None, "About"]
+
+    @rumps.clicked("View Config")
+    def view_config(self, _):
+        j_home = configparser.get('JMETER', 'HOME')
+        j_plist = configparser.get('JMETER', 'PLIST')
+        rumps.alert(title="JMeter Config", message=f"HOME: {j_home}\n\nPLIST: {j_plist}")
+
+    @rumps.clicked("Edit JMeter HOME")
+    def edit_home_path(self, _):
+        window_builder = rumps.Window('Enter JMeter HOME path', cancel="Cancel", dimensions=(300, 100))
+        window_builder.default_text = configparser.get('JMETER', 'HOME')
+        response = window_builder.run()
+        if response.clicked:
+            update_properties({'HOME': str(response.text)})
+            configparser.read(properties_file_path)
+
+    @rumps.clicked("Edit JMeter PLIST")
+    def edit_plist_path(self, _):
+        window_builder = rumps.Window('Enter JMeter PLIST path', cancel="Cancel", dimensions=(300, 100))
+        window_builder.default_text = configparser.get('JMETER', 'PLIST')
+        response = window_builder.run()
+        if response.clicked:
+            update_properties({'PLIST': str(response.text)})
+            configparser.read(properties_file_path)
+
     def menu_callback(self, sender):
         os.system(jmeter_path + ' -t ' + sender.title)
     
@@ -29,7 +67,6 @@ class DynamicMenuApp(rumps.App):
     def about(self, _):
         rumps.alert("Hamster - instantly launch JMeter test plans 🚀", "Version 0.1\n\nAuthor: NaveenKumar Namachivayam\n\nhttps://qainsights.com") 
     
- 
 
 def get_recent_jmeter_test_plans():
     """
@@ -44,20 +81,23 @@ def get_recent_jmeter_test_plans():
     jmeter_plist = configparser.get('JMETER', 'PLIST')
     recent_files = []
 
-    with open(jmeter_plist, 'rb') as fp:
-        pl = plistlib.load(fp)
-        recent_files = {k: v for k, v in pl['/org/apache/jmeter/']["gui/"]["action/"].items() if pattern.match(k)}
-        
-        # escape file names with spaces
-        recent_files = {k: v.replace(' ', '\\ ') for k, v in recent_files.items()}        
-        recent_files = dict(sorted(recent_files.items()))
-        recent_files = list(recent_files.values())
+    p = Path(jmeter_plist)
+    if p.exists():
+        with open(jmeter_plist, 'rb') as fp:
+            pl = plistlib.load(fp)
+            recent_files = {k: v for k, v in pl['/org/apache/jmeter/']["gui/"]["action/"].items() if pattern.match(k)}
 
-        # check if recent_files is empty
-        if not recent_files:
-            recent_files.append("No recent JMeter test plans files found.")
+            # escape file names with spaces
+            recent_files = {k: v.replace(' ', '\\ ') for k, v in recent_files.items()}
+            recent_files = dict(sorted(recent_files.items()))
+            recent_files = list(recent_files.values())
+
+            # check if recent_files is empty
+            if not recent_files:
+                recent_files.append("No recent JMeter test plans files found.")
 
     return recent_files
+
 
 def prechecks(jmeter_plist, jmeter_home, jmeter_path):
     """
@@ -70,6 +110,7 @@ def prechecks(jmeter_plist, jmeter_home, jmeter_path):
             validation_status = True
             break
     return validation_status
+
 
 if __name__ == "__main__":
     prechecks(jmeter_plist, jmeter_home, jmeter_path)
