@@ -9,14 +9,14 @@ from setuptools import setup
 
 APP = ['hamster.py']
 APP_NAME = 'Hamster'
-DATA_FILES = []
+DATA_FILES = [('', ['app.properties', 'hamster.png', 'hamster.icns'])]
 OPTIONS = {
     'argv_emulation': True,
     'iconfile': 'hamster.icns',
     'plist': {
         'LSUIElement': True,
     },
-    'packages': ['rumps','configparser','plistlib','os','re'],
+    'packages': ['rumps', 'configparser', 'plistlib', 'os', 're', 'sys', 'pathlib'],
 }
 
 setup(
