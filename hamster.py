@@ -28,6 +28,8 @@ class DynamicMenuApp(rumps.App):
     @rumps.clicked("About")
     def about(self, _):
         rumps.alert("Hamster - instantly launch JMeter test plans 🚀", "Version 0.1\n\nAuthor: NaveenKumar Namachivayam\n\nhttps://qainsights.com") 
+    
+ 
 
 def get_recent_jmeter_test_plans():
     """
