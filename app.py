@@ -45,13 +45,32 @@ def get_recent_jmeter_test_plans():
     with open(jmeter_plist, 'rb') as fp:
         pl = plistlib.load(fp)
         recent_files = {k: v for k, v in pl['/org/apache/jmeter/']["gui/"]["action/"].items() if pattern.match(k)}
-        # enclose double quotes for file names with spaces
+        
+        # escape file names with spaces
         recent_files = {k: v.replace(' ', '\\ ') for k, v in recent_files.items()}        
         recent_files = dict(sorted(recent_files.items()))
         recent_files = list(recent_files.values())
+
+        # check if recent_files is empty
+        if not recent_files:
+            recent_files.append("No recent JMeter test plans files found.")
+
     return recent_files
 
+def prechecks(jmeter_plist, jmeter_home, jmeter_path):
+    """
+    Checks if the required configuration is set.
+    """
+    validation_status = False
+    precheck = [jmeter_plist, jmeter_home, jmeter_path]
+    for check in precheck:
+        if not check:
+            validation_status = True
+            break
+    return validation_status
+
 if __name__ == "__main__":
+    prechecks(jmeter_plist, jmeter_home, jmeter_path)
     
     menu_items = get_recent_jmeter_test_plans()
     DynamicMenuApp("JMeter", menu_items).run()
