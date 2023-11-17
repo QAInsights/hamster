@@ -19,8 +19,34 @@ username = getpass.getuser()
 jmeter_plist = f"/Users/{username}/Library/Preferences/org.apache.jmeter.plist"
 jmeter_home = configparser.get('JMETER', 'HOME')
 jmeter_path = jmeter_home + '/bin/jmeter'
+icon_path=os.path.join(os.path.dirname(sys.argv[0]), 'hamster.png')
 
 pattern = re.compile("recent_file_.*")
+
+def show_splash_screen():
+    welcome_message = '''
+    ---------------------
+    Hamster is a menu bar app to instantly launch JMeter test plans.
+    ---------------------
+
+    1. Configure `JMETER_HOME` by launching `Hamster > Edit JMETER_HOME`
+
+    2. To launch JMeter, click on `Hamster > Just JMeter`
+
+    3. To launch JMeter test plans, click on `Hamster > select the test plan`.
+
+    4. To view the configuration, click on `Hamster > View Config`
+
+    5. To restart Hamster, click on` Hamster > Restart`
+
+    6. To quit Hamster, click on `Hamster > Quit`
+
+    7. To know more about Hamster, click on `Hamster > About`
+
+    8. To refresh the recent test plans, click on `Hamster > Restart`
+
+    '''
+    rumps.alert(title="Welcome to Hamster 🐹", message=welcome_message, icon_path=icon_path, ok="Got it!")
 
 # Function to update properties in app.properties
 def update_properties(properties):
@@ -33,7 +59,7 @@ def update_properties(properties):
 
 class DynamicMenuApp(rumps.App):
     def __init__(self, title, menu_items):
-        super(DynamicMenuApp, self).__init__(title, icon="hamster.png", quit_button='Quit')
+        super(DynamicMenuApp, self).__init__(title, icon=icon_path, quit_button='Quit')
         self.menu = ['Just JMeter', None] + [rumps.MenuItem(item, callback=self.menu_callback) for item in menu_items] \
                     + [None, 'View Config', 'Edit JMETER_HOME'] + [None, 'Restart', 'About']
     
@@ -45,7 +71,7 @@ class DynamicMenuApp(rumps.App):
     def view_config(self, _):
         try:
             j_home = configparser.get('JMETER', 'HOME')
-            rumps.alert(title="JMeter Config", message=f"JMETER_HOME: {j_home}\n")
+            rumps.alert(title="Hamster Configuration", message=f"JMETER_HOME: {j_home}\n", icon_path=icon_path)
             restart(1)
         except Exception as e:
             rumps.alert("Error", e)
@@ -53,8 +79,11 @@ class DynamicMenuApp(rumps.App):
     @rumps.clicked("Edit JMETER_HOME")
     def edit_home_path(self, _):
         try:
-            window_builder = rumps.Window('Enter absolute JMETER_HOME path', cancel="Cancel", dimensions=(300, 100))
+            window_builder = rumps.Window(message='Enter absolute JMETER_HOME path', cancel="Cancel", dimensions=(300, 100))
             window_builder.default_text = configparser.get('JMETER', 'HOME')
+            window_builder.icon = icon_path
+            window_builder.title = "Configure JMETER_HOME"
+
             response = window_builder.run()
             if response.clicked:
                 update_properties({'HOME': str(response.text)})
@@ -65,7 +94,7 @@ class DynamicMenuApp(rumps.App):
     def menu_callback(self, sender):
         try:
             subprocess.Popen([jmeter_path, '-t', sender.title], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            restart(1)
+            restart(5)
         except Exception as e:
             rumps.alert("Error", e)
     
@@ -78,7 +107,8 @@ class DynamicMenuApp(rumps.App):
     
     @rumps.clicked("About")
     def about(self, _):
-        rumps.alert("Hamster - instantly launch JMeter test plans 🚀", "Version 0.1\n\nAuthor: NaveenKumar Namachivayam\n\nhttps://qainsights.com") 
+        rumps.alert("Hamster - instantly launch JMeter test plans 🚀", \
+                    "Version 0.1\n\nAuthor: NaveenKumar Namachivayam\n\nhttps://qainsights.com", icon_path=icon_path) 
 
 def restart(delay):
     if delay:
@@ -142,7 +172,9 @@ def prechecks(jmeter_plist, jmeter_home, jmeter_path):
     return validation_status
 
 
+    
 if __name__ == "__main__":
+    show_splash_screen()
     prechecks(jmeter_plist, jmeter_home, jmeter_path)    
     menu_items = get_recent_jmeter_test_plans()
     DynamicMenuApp("JMeter", menu_items).run()
