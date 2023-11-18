@@ -25,7 +25,8 @@ class DynamicMenuApp(rumps.App):
         super(DynamicMenuApp, self).__init__(title, icon=icon_path, quit_button='Quit')
         self.menu = ['Launch JMeter', 'Recent Test Plans', None, 'View Config', 'Edit JMETER_HOME', None,
                      'Refresh', 'Help', 'About']
-        prechecks(jmeter_plist, jmeter_home, jmeter_path)
+        self.jmeter_path = jmeter_path()
+        prechecks(jmeter_plist, jmeter_home, self.jmeter_path)
         self.refresh_test_plans(delay=1)
 
     def refresh_test_plans(self, delay=5):
@@ -100,7 +101,7 @@ class DynamicMenuApp(rumps.App):
         Callback function for menu items.
         """
         try:
-            subprocess.Popen([jmeter_path, '-t', sender.title], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.Popen([self.jmeter_path, '-t', sender.title], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             self.refresh_test_plans()
         except Exception as e:
             rumps.alert("Error", e)
@@ -111,7 +112,7 @@ class DynamicMenuApp(rumps.App):
         Launches JMeter without any test plan.
         """
         try:
-            subprocess.Popen([jmeter_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.Popen([self.jmeter_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         except Exception as e:
             rumps.alert("Error", e)
     
