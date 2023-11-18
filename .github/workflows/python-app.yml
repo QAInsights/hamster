@@ -26,3 +26,8 @@ jobs:
     - name: Generate app using py2app
       run: |
         python setup.py py2app
+    - name: Upload dist folder
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist
+        path: dist
