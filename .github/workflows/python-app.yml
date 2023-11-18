@@ -25,12 +25,12 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Generate app using py2app
       run: |
-        python setup.py py2app --arch arm64
-    - name: Upload dist folder
+        python setup.py py2app
+    - name: Upload app
       uses: actions/upload-artifact@v2
       with:
         name: dist
-        path: dist
+        path: dist/Hamster.app
     # - name: Create Release
     #   id: create_release
     #   uses: actions/create-release@v1
