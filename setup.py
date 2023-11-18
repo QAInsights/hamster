@@ -9,10 +9,10 @@ from setuptools import setup
 
 APP = ['hamster/__main__.py']
 APP_NAME = 'Hamster'
-DATA_FILES = [('', ['hamster/app.properties'])]
+DATA_FILES = [('', ['hamster/app.properties']), ('img', ['hamster/img/hamster.png'])]
 OPTIONS = {
     'argv_emulation': False,
-    'iconfile': 'hamster/resources/hamster.png',
+    'iconfile': 'hamster/img/hamster.png',
     'plist': {
         'LSUIElement': True,
     },

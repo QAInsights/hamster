@@ -8,7 +8,7 @@ config_parser = configparser.ConfigParser()
 properties_file_path = os.path.join(os.path.dirname(sys.argv[0]), 'app.properties')
 config_parser.read(properties_file_path)
 
-icon_path=os.path.join(os.path.dirname(sys.argv[0]), 'hamster.png')
+icon_path=os.path.join(os.path.dirname(sys.argv[0]), 'img/hamster.png')
 username = getpass.getuser()
 pattern = re.compile("recent_file_.*")
 
