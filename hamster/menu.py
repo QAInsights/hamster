@@ -1,7 +1,7 @@
 import rumps
 import subprocess
-from utils import restart, update_properties, show_splash_screen
-from config import jmeter_path, icon_path, properties_file_path, config_parser
+from utils import update_properties, show_splash_screen, prechecks, get_recent_jmeter_test_plans, sleep
+from config import jmeter_path, icon_path, properties_file_path, config_parser, jmeter_plist, jmeter_home
 
 
 class DynamicMenuApp(rumps.App):
@@ -10,7 +10,6 @@ class DynamicMenuApp(rumps.App):
 
     Attributes:
         title (str): The title of the application.
-        menu_items (list): A list of menu items.
 
     Methods:
         __init__(self, title, menu_items): Initializes the DynamicMenuApp object.
@@ -22,17 +21,41 @@ class DynamicMenuApp(rumps.App):
         just_jmeter(self, _): Launches JMeter without any test plan.
         about(self, _): Displays information about the application.
     """
-    def __init__(self, title, menu_items):
+    def __init__(self, title):
         super(DynamicMenuApp, self).__init__(title, icon=icon_path, quit_button='Quit')
-        self.menu = ['Just JMeter', None] + [rumps.MenuItem(item, callback=self.menu_callback) for item in menu_items] \
-                    + [None, 'View Config', 'Edit JMETER_HOME'] + [None, 'Restart', None, 'Help', 'About']
-    
-    @rumps.clicked("Restart")
-    def restart(self, _):
+        self.menu = ['Launch JMeter', 'Recent Test Plans', None, 'View Config', 'Edit JMETER_HOME', None,
+                     'Refresh', 'Help', 'About']
+        prechecks(jmeter_plist, jmeter_home, jmeter_path)
+        self.refresh_test_plans(delay=1)
+
+    def refresh_test_plans(self, delay=5):
         """
-        Restarts the application.
+        Refreshes Recent Test Plans Menu Items
+        Args:
+            delay: in seconds, defaults to 5
+
+        Returns: None
+
         """
-        restart(1)
+        sleep(delay)
+        recent_test_plans_menu = self.menu["Recent Test Plans"]
+        if recent_test_plans_menu:
+            recent_test_plans_menu.clear()
+
+        recent_test_plans = get_recent_jmeter_test_plans()
+        if not len(recent_test_plans) > 0:
+            recent_test_plans_menu.add(rumps.MenuItem("No recent JMeter test plans files found."))
+            return
+
+        for test_plan in recent_test_plans:
+            recent_test_plans_menu.add(rumps.MenuItem(test_plan, callback=self.menu_callback))
+
+    @rumps.clicked("Refresh")
+    def refresh(self, _):
+        """
+        Refreshes Test Plans
+        """
+        self.refresh_test_plans(1)
 
     @rumps.clicked("Help")
     def help(self, _):
@@ -58,15 +81,17 @@ class DynamicMenuApp(rumps.App):
         Allows the user to edit the JMETER_HOME path.
         """
         try:
-            window_builder = rumps.Window(message='Enter absolute JMETER_HOME path', cancel="Cancel", dimensions=(300, 100))
+            window_builder = rumps.Window(message='Enter absolute JMETER_HOME path', cancel="Cancel",
+                                          dimensions=(300, 100))
             window_builder.default_text = config_parser.get('JMETER', 'HOME')
             window_builder.icon = icon_path
             window_builder.title = "Configure JMETER_HOME"
-
             response = window_builder.run()
+
             if response.clicked:
-                update_properties({'HOME': str(response.text)})
+                update_properties({'HOME': str(response.text.strip())})
                 config_parser.read(properties_file_path)
+                self.refresh_test_plans()
         except Exception as e:
             rumps.alert("Error", e)
 
@@ -76,10 +101,11 @@ class DynamicMenuApp(rumps.App):
         """
         try:
             subprocess.Popen([jmeter_path, '-t', sender.title], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            self.refresh_test_plans()
         except Exception as e:
             rumps.alert("Error", e)
     
-    @rumps.clicked("Just JMeter")
+    @rumps.clicked("Launch JMeter")
     def just_jmeter(self, _):
         """
         Launches JMeter without any test plan.

@@ -1,22 +1,13 @@
-import os
 import plistlib
-import psutil
 import time
-import sys
 import rumps
 
 from pathlib import Path
 from config import properties_file_path, config_parser, jmeter_plist, pattern, icon_path
 
 
-def restart(delay):
-    if delay:
-        time.sleep(delay)        
-    else:
-        time.sleep(1)
-    python = sys.executable
-    psutil.Popen([python] + sys.argv)
-    psutil.Process(os.getpid()).terminate()   
+def sleep(delay=1):
+    time.sleep(delay)
 
 
 def refresh_plist(plist_path):
@@ -49,13 +40,13 @@ def get_recent_jmeter_test_plans():
                 recent_files = {k: v for k, v in pl['/org/apache/jmeter/']["gui/"]["action/"].items() if pattern.match(k)}
 
                 # escape file names with spaces
-                recent_files = {k: v.replace(' ', '\\ ') for k, v in recent_files.items()}
+                recent_files = {k: v for k, v in recent_files.items()}
                 recent_files = dict(sorted(recent_files.items()))
                 recent_files = list(recent_files.values())
                 
                 # check if recent_files is empty
-                if not recent_files:
-                    recent_files.append("No recent JMeter test plans files found.")
+                # if not recent_files:
+                #     recent_files.append("No recent JMeter test plans files found.")
         except Exception as e:
             rumps.alert("Error", e)
         
