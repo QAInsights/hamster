@@ -13,5 +13,9 @@ username = getpass.getuser()
 pattern = re.compile("recent_file_.*")
 
 jmeter_plist = f"/Users/{username}/Library/Preferences/org.apache.jmeter.plist"
-jmeter_home = config_parser.get('JMETER', 'HOME')
-jmeter_path = jmeter_home + '/bin/jmeter'
+
+
+def jmeter_path():
+    jmeter_home = config_parser.get('JMETER', 'HOME')
+    jmeter_bin = jmeter_home + '/bin/jmeter'
+    return jmeter_home, jmeter_bin
