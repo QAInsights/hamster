@@ -67,8 +67,6 @@ class DynamicMenuApp(rumps.App):
             if response.clicked:
                 update_properties({'HOME': str(response.text)})
                 config_parser.read(properties_file_path)
-                # restarting the app for the changes to take effect
-                restart(1)
         except Exception as e:
             rumps.alert("Error", e)
 
@@ -78,7 +76,6 @@ class DynamicMenuApp(rumps.App):
         """
         try:
             subprocess.Popen([jmeter_path, '-t', sender.title], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            restart(5)
         except Exception as e:
             rumps.alert("Error", e)
     
