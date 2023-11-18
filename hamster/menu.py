@@ -1,7 +1,7 @@
 import rumps
 import subprocess
 from utils import update_properties, show_splash_screen, prechecks, get_recent_jmeter_test_plans, sleep
-from config import jmeter_path, icon_path, properties_file_path, config_parser, jmeter_plist, jmeter_home
+from config import jmeter_path, icon_path, properties_file_path, config_parser, jmeter_plist
 
 
 class DynamicMenuApp(rumps.App):
@@ -25,8 +25,8 @@ class DynamicMenuApp(rumps.App):
         super(DynamicMenuApp, self).__init__(title, icon=icon_path, quit_button='Quit')
         self.menu = ['Launch JMeter', 'Recent Test Plans', None, 'View Config', 'Edit JMETER_HOME', None,
                      'Refresh', 'Help', 'About']
-        self.jmeter_path = jmeter_path()
-        prechecks(jmeter_plist, jmeter_home, self.jmeter_path)
+        self.jmeter_home, self.jmeter_bin = jmeter_path()
+        prechecks(jmeter_plist, self.jmeter_home, self.jmeter_bin)
         self.refresh_test_plans(delay=1)
 
     def refresh_test_plans(self, delay=5):
@@ -90,9 +90,11 @@ class DynamicMenuApp(rumps.App):
             response = window_builder.run()
 
             if response.clicked:
-                update_properties({'HOME': str(response.text.strip())})
+                updated_jmeter_home = response.text.strip()
+                update_properties({'HOME': str(updated_jmeter_home)})
                 config_parser.read(properties_file_path)
-                self.refresh_test_plans()
+                self.jmeter_home, self.jmeter_bin = jmeter_path()
+                self.refresh_test_plans(1)
         except Exception as e:
             rumps.alert("Error", e)
 
@@ -101,7 +103,7 @@ class DynamicMenuApp(rumps.App):
         Callback function for menu items.
         """
         try:
-            subprocess.Popen([self.jmeter_path, '-t', sender.title], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.Popen([self.jmeter_bin, '-t', sender.title], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             self.refresh_test_plans()
         except Exception as e:
             rumps.alert("Error", e)
@@ -112,7 +114,7 @@ class DynamicMenuApp(rumps.App):
         Launches JMeter without any test plan.
         """
         try:
-            subprocess.Popen([self.jmeter_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.Popen([self.jmeter_bin], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         except Exception as e:
             rumps.alert("Error", e)
     
