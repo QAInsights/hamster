@@ -56,4 +56,4 @@ An app that puts your recent JMeter test plans just a click away from your Mac m
 - **Note**: This application may require restarting or refreshing the menu in order to fetch the changes from the PLIST file. 🔄
 
 ## 🗒️ License
-- Apache 2
+- Apache 2 License
