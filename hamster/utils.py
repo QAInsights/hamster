@@ -44,9 +44,6 @@ def get_recent_jmeter_test_plans():
                 recent_files = dict(sorted(recent_files.items()))
                 recent_files = list(recent_files.values())
                 
-                # check if recent_files is empty
-                # if not recent_files:
-                #     recent_files.append("No recent JMeter test plans files found.")
         except Exception as e:
             rumps.alert("Error", e)
         
