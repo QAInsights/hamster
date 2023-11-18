@@ -3,9 +3,11 @@ import plistlib
 import psutil
 import time
 import sys
+import rumps
+
 from pathlib import Path
-from config import properties_file_path, configparser, jmeter_plist, pattern, icon_path
-import utils as utils
+from config import properties_file_path, config_parser, jmeter_plist, pattern, icon_path
+
 
 def restart(delay):
     if delay:
@@ -16,10 +18,12 @@ def restart(delay):
     psutil.Popen([python] + sys.argv)
     psutil.Process(os.getpid()).terminate()   
 
+
 def refresh_plist(plist_path):
     with open(plist_path, 'rb') as plist_file:
         plist_data = plistlib.load(plist_file)
     return plist_data
+
 
 def get_recent_jmeter_test_plans():
     """
@@ -32,7 +36,7 @@ def get_recent_jmeter_test_plans():
         list: A list of recently opened JMeter test plans. If no recent test plans are found, the list will contain
         a single string indicating that no recent JMeter test plans files were found.
     """
-    utils.configparser.read(properties_file_path)
+    config_parser.read(properties_file_path)
     
     recent_files = []
 
@@ -57,6 +61,7 @@ def get_recent_jmeter_test_plans():
         
     return recent_files
 
+
 def prechecks(jmeter_plist, jmeter_home, jmeter_path):
     """
     Checks if the required configuration is set.
@@ -69,7 +74,6 @@ def prechecks(jmeter_plist, jmeter_home, jmeter_path):
             break
     return validation_status
 
-import rumps
 
 def show_splash_screen():
     welcome_message = '''
@@ -100,7 +104,7 @@ def show_splash_screen():
 # Function to update properties in app.properties
 def update_properties(properties):
     for key, value in properties.items():
-        configparser['JMETER'][key] = value
+        config_parser['JMETER'][key] = value
 
     with open(properties_file_path, 'w') as config_file:
-        configparser.write(config_file)
+        config_parser.write(config_file)

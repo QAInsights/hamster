@@ -1,7 +1,7 @@
 import rumps
 import subprocess
 from utils import restart, update_properties, show_splash_screen
-from config import jmeter_path, icon_path, properties_file_path, configparser
+from config import jmeter_path, icon_path, properties_file_path, config_parser
 
 
 class DynamicMenuApp(rumps.App):
@@ -47,7 +47,7 @@ class DynamicMenuApp(rumps.App):
         Displays the configuration of the application.
         """
         try:
-            j_home = configparser.get('JMETER', 'HOME')
+            j_home = config_parser.get('JMETER', 'HOME')
             rumps.alert(title="Hamster Configuration", message=f"JMETER_HOME: {j_home}\n", icon_path=icon_path)
         except Exception as e:
             rumps.alert("Error", e)
@@ -59,14 +59,14 @@ class DynamicMenuApp(rumps.App):
         """
         try:
             window_builder = rumps.Window(message='Enter absolute JMETER_HOME path', cancel="Cancel", dimensions=(300, 100))
-            window_builder.default_text = configparser.get('JMETER', 'HOME')
+            window_builder.default_text = config_parser.get('JMETER', 'HOME')
             window_builder.icon = icon_path
             window_builder.title = "Configure JMETER_HOME"
 
             response = window_builder.run()
             if response.clicked:
                 update_properties({'HOME': str(response.text)})
-                configparser.read(properties_file_path)
+                config_parser.read(properties_file_path)
                 # restarting the app for the changes to take effect
                 restart(1)
         except Exception as e:
