@@ -5,7 +5,7 @@ name: Hamster
 
 on:
   push:
-    branches: [ "cicd/gh-actions" ]
+    branches: [ "main" ]
 
 jobs:
   build:
