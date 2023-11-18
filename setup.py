@@ -7,16 +7,16 @@ Usage:
 """
 from setuptools import setup
 
-APP = ['hamster.py']
+APP = ['hamster/__main__.py']
 APP_NAME = 'Hamster'
-DATA_FILES = [('', ['app.properties', 'hamster.png'])]
+DATA_FILES = [('', ['hamster/app.properties']), ('img', ['hamster/img/hamster.png'])]
 OPTIONS = {
-    'argv_emulation': True,
-    'iconfile': 'hamster.png',
+    'argv_emulation': False,
+    'iconfile': 'hamster/img/hamster.png',
     'plist': {
         'LSUIElement': True,
     },
-    'packages': ['rumps', 'configparser', 'plistlib', 'os', 're', 'sys', 'pathlib'],
+    'packages': ['rumps', 'configparser', 'plistlib', 'os', 're', 'pathlib', 'psutil'],
 }
 
 setup(
