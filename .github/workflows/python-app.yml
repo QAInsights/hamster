@@ -33,7 +33,7 @@ jobs:
 
     - name: Generate app using py2app
       run: |
-        python setup.py py2app
+        python setup.py py2app --arch x86_64
 
     - name: List current directory
       run: |
