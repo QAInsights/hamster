@@ -5,14 +5,14 @@ name: Hamster
 
 on:
   push:
-    branches: [ "fix/gh-actions" ]
-#    tags:
-#      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+    branches: [ "main" ]
 
 jobs:
   build:
 
     runs-on: ${{ matrix.os }}
+    env:
+      RELEASE_TAG: v0.0.${{ github.run_number }}
 
     strategy:
       matrix:
@@ -34,7 +34,6 @@ jobs:
 
     - name: Generate app for intel architecture
       run: |
-          uname -a
           python setup.py py2app
           mv dist dist-intel
       if: matrix.os == 'macos' && matrix.arch == 'X64'
@@ -72,7 +71,7 @@ jobs:
     - name: GitHub Tag
       uses: mathieudutour/github-tag-action@v6.1
       with:
-        tag: ${{ steps.tag_version.outputs.new_tag }}
+        tag: ${{ env.RELEASE_TAG }}
         github_token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
 
     - name: Release Darwin
@@ -80,7 +79,7 @@ jobs:
       if: github.ref == 'refs/heads/fix/gh-actions'
       with:
         token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
-        tag_name: v${{ github.run_number }}
+        tag_name: v${{ env.RELEASE_TAG }}
         files: |
           dist-arm64/Hamster-darwin.dmg
 
@@ -89,6 +88,6 @@ jobs:
       if: github.ref == 'refs/heads/fix/gh-actions'
       with:
         token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
-        tag_name: v${{ github.run_number }}
+        tag_name: v${{ env.RELEASE_TAG }}
         files: |
           dist-intel/Hamster-intel.dmg
