@@ -46,20 +46,25 @@ jobs:
     - name: Convert dist-intel to DMG
       run: |
         hdiutil create -volname "Hamster" -srcfolder dist-intel -ov -format UDZO dist-intel/Hamster-intel.dmg
+      if: runner.os == 'macos'
 
     - name: Convert dist-arm64 to DMG
       run: |
         hdiutil create -volname "Hamster" -srcfolder dist-arm64 -ov -format UDZO dist-arm64/Hamster-darwin.dmg
+      if: runner.os == 'self-hosted'
 
     - name: Upload intel app
       uses: actions/upload-artifact@v2
       with:
         name: Hamster
         path: dist-intel/Hamster-intel.dmg
+      if: runner.os == 'macos'
 
     - name: Upload arm64 app
       uses: actions/upload-artifact@v2
       with:
         name: Hamster
         path: dist-arm64/Hamster-darwin.dmg
+      if: runner.os == 'self-hosted'
+
 
