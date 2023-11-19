@@ -5,7 +5,7 @@ name: Hamster
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "fix/gh-actions" ]
 
 jobs:
   build:
@@ -59,10 +59,15 @@ jobs:
         chmod +x dist-arm64/Hamster.app/Contents/MacOS/python
         ls -la dist-arm64/Hamster.app/Contents/MacOS/
 
+    - name: Create tar file
+      run: |
+        tar -czvf dist-arm64.tar.gz dist-arm64
+        ls -la
+
     - name: Upload arm64 app
       uses: actions/upload-artifact@v2
       with:
-        name: dist-arm64
+        name: dist-arm64.tar.gz
         path: dist-arm64
     
     
