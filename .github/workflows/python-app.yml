@@ -31,7 +31,7 @@ jobs:
       run: |
           python setup.py py2app
           mv dist dist-intel
-      if: runner.os == 'macos-latest' && runner.architecture == 'X64'
+      if: runner.os == 'macos' && runner.architecture == 'X64'
 
     - name: Convert dist-intel to DMG
       run: |
