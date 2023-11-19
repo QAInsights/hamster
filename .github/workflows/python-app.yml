@@ -11,7 +11,7 @@ jobs:
   build:
 
     # run on self-hosted runner and macos-latest for arm64 architecture and intel architecture
-    runs-on: [self-hosted, macos-latest]
+    runs-on: [self-hosted, macos]
 
     steps:
     - uses: actions/checkout@v3
