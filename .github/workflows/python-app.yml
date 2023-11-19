@@ -36,13 +36,13 @@ jobs:
           uname -a
           python setup.py py2app
           mv dist dist-intel
-      if: runner.os == 'macos'
+      if: github.runner == 'macos'
 
     - name: Generate app for arm64 architecture
       run: |
         python setup.py py2app
         mv dist dist-arm64
-      if: runner.os == 'self-hosted'
+      if: github.runner == 'self-hosted'
 
     - name: Convert dist-intel to DMG
       run: |
@@ -52,20 +52,20 @@ jobs:
     - name: Convert dist-arm64 to DMG
       run: |
         hdiutil create -volname "Hamster" -srcfolder dist-arm64 -ov -format UDZO dist-arm64/Hamster-darwin.dmg
-      if: runner.os == 'self-hosted'
+      if: github.runner == 'self-hosted'
 
     - name: Upload intel app
       uses: actions/upload-artifact@v2
       with:
         name: Hamster-macos-intel-x86_64
         path: dist-intel/Hamster-intel.dmg
-      if: runner.os == 'macos'
+      if: github.runner == 'macos'
 
     - name: Upload arm64 app
       uses: actions/upload-artifact@v2
       with:
         name: Hamster-macos-apple-arm64
         path: dist-arm64/Hamster-darwin.dmg
-      if: runner.os == 'self-hosted'
+      if: github.runner == 'self-hosted'
 
 
