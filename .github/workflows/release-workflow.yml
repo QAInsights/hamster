@@ -76,7 +76,7 @@ jobs:
 
     - name: Release Darwin
       uses: softprops/action-gh-release@v1
-      if: github.ref == 'refs/heads/fix/gh-actions'
+      if: github.ref == 'refs/heads/main'
       with:
         token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
         tag_name: v${{ env.RELEASE_TAG }}
@@ -85,7 +85,7 @@ jobs:
 
     - name: Release Intel
       uses: softprops/action-gh-release@v1
-      if: github.ref == 'refs/heads/fix/gh-actions'
+      if: github.ref == 'refs/heads/main'
       with:
         token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
         tag_name: v${{ env.RELEASE_TAG }}
