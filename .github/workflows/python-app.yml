@@ -10,7 +10,8 @@ on:
 jobs:
   build:
 
-    runs-on: self-hosted
+    # run on self-hosted runner and macos-latest for arm64 architecture and intel architecture
+    runs-on: [self-hosted, macos-latest]
 
     steps:
     - uses: actions/checkout@v3
@@ -26,17 +27,35 @@ jobs:
         pip install py2app
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+    - name: Generate app for intel architecture
+      run: |
+          python setup.py py2app
+          mv dist dist-intel
+      if: runner.os == 'macos-latest' && runner.architecture == 'X64'
+
+    - name: Convert dist-intel to DMG
+      run: |
+        hdiutil create -volname "Hamster" -srcfolder dist-intel -ov -format UDZO dist-intel/Hamster-intel.dmg
+
     - name: Generate app for arm64 architecture
       run: |
         python setup.py py2app
         mv dist dist-arm64
+      if: runner.os == 'self-hosted' && runner.architecture == 'ARM64'
 
     - name: Convert dist-arm64 to DMG
       run: |
-        hdiutil create -volname "Hamster" -srcfolder dist-arm64 -ov -format UDZO dist-arm64/Hamster.dmg
+        hdiutil create -volname "Hamster" -srcfolder dist-arm64 -ov -format UDZO dist-arm64/Hamster-darwin.dmg
+
+    - name: Upload intel app
+      uses: actions/upload-artifact@v2
+      with:
+        name: Hamster
+        path: dist-intel/Hamster-intel.dmg
 
     - name: Upload arm64 app
       uses: actions/upload-artifact@v2
       with:
         name: Hamster
-        path: dist-arm64/Hamster.dmg
+        path: dist-arm64/Hamster-darwin.dmg
+
