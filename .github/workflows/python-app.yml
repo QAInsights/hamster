@@ -31,41 +31,19 @@ jobs:
         pip install py2app
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    # - name: Generate app for x86_64 architecture
-    #   run: |
-    #     arch -x86_64 python setup.py py2app --arch x86_64
-    #     mv dist dist-x86_64
-
     - name: Generate app for arm64 architecture
       run: |
         python setup.py py2app
         mv dist dist-arm64
 
-    # - name: Upload x86_64 app
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: dist-x86_64
-    #     path: dist-x86_64
-
-    - name: List current directory
+    - name: Convert dist-arm64 to DMG
       run: |
-        ls -la
-        uname -a
-        ls -la dist-arm64
-    
-    - name: Preserve permissions
-      run: |
-        chmod -R +x dist-arm64
-
-    - name: Create tar file
-      run: |
-        tar -cpvf dist-arm64.tar.gz dist-arm64
-        ls -la
+        hdiutil create -volname "Hamster" -srcfolder dist-arm64 -ov -format UDZO dist-arm64/Hamster.dmg
 
     - name: Upload arm64 app
       uses: actions/upload-artifact@v2
       with:
-        name: dist-arm64.tar.gz
-        path: dist-arm64
+        name: Hamster
+        path: dist-arm64/Hamster.dmg
         
         
