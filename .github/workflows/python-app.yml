@@ -76,7 +76,7 @@ jobs:
         git tag v${{ github.run_number }}
         git push origin v${{ github.run_number }}
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
 
     - name: Release Darwin
       uses: softprops/action-gh-release@v1
