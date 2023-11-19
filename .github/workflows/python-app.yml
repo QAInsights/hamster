@@ -21,7 +21,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-
     - name: Set up Python 3.10.11
       uses: actions/setup-python@v3
       with:
@@ -70,41 +69,22 @@ jobs:
         path: dist-arm64/Hamster-darwin.dmg
       if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
 
-    # Create a release for intel and arm64 apps
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
+    - name: Release Darwin
+      uses: softprops/action-gh-release@v1
+      if:
+        startsWith(github.ref, 'refs/tags/')
+        matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+        token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
+        files: |
+          dist-arm64/Hamster-darwin.dmg
 
-    # Upload intel app to release
-    - name: Upload Release Asset
-      id: upload-release-asset-intel
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
+    - name: Release Intel
+      uses: softprops/action-gh-release@v1
+      if:
+        startsWith(github.ref, 'refs/tags/')
+        matrix.os == 'macos' && matrix.arch == 'X64'
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: dist-intel/Hamster-intel.dmg
-        asset_name: Hamster-macos-intel-x86_64.dmg
-        asset_content_type: application/x-diskcopy
-      if: matrix.os == 'macos' && matrix.arch == 'X64'
-
-    # Upload arm64 app to release
-    - name: Upload Release Asset
-      id: upload-release-asset-apple
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: dist-arm64/Hamster-darwin.dmg
-        asset_name: Hamster-macos-apple-arm64.dmg
-        asset_content_type: application/x-diskcopy
-      if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
-
+        token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
+        files: |
+          dist-intel/Hamster-intel.dmg
