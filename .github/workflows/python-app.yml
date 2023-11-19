@@ -73,7 +73,7 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
@@ -85,7 +85,7 @@ jobs:
       id: upload-release-asset-intel
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: dist-intel/Hamster-intel.dmg
@@ -98,7 +98,7 @@ jobs:
       id: upload-release-asset-apple
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: dist-arm64/Hamster-darwin.dmg
