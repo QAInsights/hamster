@@ -31,7 +31,7 @@ jobs:
       run: |
           python setup.py py2app
           mv dist dist-intel
-      if: runner.os == 'macos' && runner.architecture == 'X64'
+      if: runner.os == 'macos' && runner.architecture == 'x64'
 
     - name: Convert dist-intel to DMG
       run: |
@@ -41,7 +41,7 @@ jobs:
       run: |
         python setup.py py2app
         mv dist dist-arm64
-      if: runner.os == 'self-hosted' && runner.architecture == 'ARM64'
+      if: runner.os == 'self-hosted' && runner.architecture == 'arm64
 
     - name: Convert dist-arm64 to DMG
       run: |
