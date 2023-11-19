@@ -1,0 +1,94 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python.
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Hamster
+
+on:
+  push:
+    branches: [ "fix/gh-actions" ]
+#    tags:
+#      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ self-hosted, macos ]
+        arch: [ 'X64', 'ARM64' ]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10.11"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install py2app
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Generate app for intel architecture
+      run: |
+          uname -a
+          python setup.py py2app
+          mv dist dist-intel
+      if: matrix.os == 'macos' && matrix.arch == 'X64'
+
+    - name: Generate app for arm64 architecture
+      run: |
+        python setup.py py2app
+        mv dist dist-arm64
+      if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
+
+    - name: Convert dist-intel to DMG
+      run: |
+        hdiutil create -volname "Hamster" -srcfolder dist-intel -ov -format UDZO dist-intel/Hamster-intel.dmg
+      if: matrix.os == 'macos' && matrix.arch == 'X64'
+
+    - name: Convert dist-arm64 to DMG
+      run: |
+        hdiutil create -volname "Hamster" -srcfolder dist-arm64 -ov -format UDZO dist-arm64/Hamster-darwin.dmg
+      if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
+
+    - name: Upload intel app
+      uses: actions/upload-artifact@v2
+      with:
+        name: Hamster-macos-intel-x86_64
+        path: dist-intel/Hamster-intel.dmg
+      if: matrix.os == 'macos' && matrix.arch == 'X64'
+
+    - name: Upload arm64 app
+      uses: actions/upload-artifact@v2
+      with:
+        name: Hamster-macos-apple-arm64
+        path: dist-arm64/Hamster-darwin.dmg
+      if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
+
+    - name: GitHub Tag
+      uses: mathieudutour/github-tag-action@v6.1
+      with:
+        tag: ${{ steps.tag_version.outputs.new_tag }}
+        github_token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
+
+    - name: Release Darwin
+      uses: softprops/action-gh-release@v1
+      if: github.ref == 'refs/heads/fix/gh-actions'
+      with:
+        token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
+        tag_name: v${{ github.run_number }}
+        files: |
+          dist-arm64/Hamster-darwin.dmg
+
+    - name: Release Intel
+      uses: softprops/action-gh-release@v1
+      if: github.ref == 'refs/heads/fix/gh-actions'
+      with:
+        token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
+        tag_name: v${{ github.run_number }}
+        files: |
+          dist-intel/Hamster-intel.dmg
