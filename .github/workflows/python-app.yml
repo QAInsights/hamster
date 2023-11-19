@@ -59,7 +59,7 @@ jobs:
 
     - name: Create tar file
       run: |
-        tar -czvf dist-arm64.tar.gz dist-arm64
+        tar -cpvf dist-arm64.tar.gz dist-arm64
         ls -la
 
     - name: Upload arm64 app
