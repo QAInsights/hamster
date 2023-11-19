@@ -47,6 +47,12 @@ jobs:
     #     name: dist-x86_64
     #     path: dist-x86_64
 
+    - name: List current directory
+      run: |
+        ls -la
+        uname -a
+        ls -la dist-arm64
+
     - name: Upload arm64 app
       uses: actions/upload-artifact@v2
       with:
