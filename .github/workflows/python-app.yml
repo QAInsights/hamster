@@ -69,11 +69,21 @@ jobs:
         path: dist-arm64/Hamster-darwin.dmg
       if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
 
+    - name: Create tag
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git tag v${{ github.run_number }}
+        git push origin v${{ github.run_number }}
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Release Darwin
       uses: softprops/action-gh-release@v1
       if: github.ref == 'refs/heads/fix/gh-actions'
       with:
         token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
+        tag_name: v${{ github.run_number }}
         files: |
           dist-arm64/Hamster-darwin.dmg
 
@@ -82,5 +92,6 @@ jobs:
       if: github.ref == 'refs/heads/fix/gh-actions'
       with:
         token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
+        tag_name: v${{ github.run_number }}
         files: |
           dist-intel/Hamster-intel.dmg
