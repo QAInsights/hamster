@@ -93,16 +93,16 @@ jobs:
         asset_content_type: application/x-diskcopy
       if: matrix.os == 'macos' && matrix.arch == 'X64'
 
-    # Upload arm64 app to release
-    - name: Upload Release Asset
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: dist-arm64/Hamster-darwin.dmg
-        asset_name: Hamster-macos-apple-arm64.dmg
-        asset_content_type: application/x-diskcopy
-      if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
+#    # Upload arm64 app to release
+#    - name: Upload Release Asset
+#      id: upload-release-asset
+#      uses: actions/upload-release-asset@v1
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      with:
+#        upload_url: ${{ steps.create_release.outputs.upload_url }}
+#        asset_path: dist-arm64/Hamster-darwin.dmg
+#        asset_name: Hamster-macos-apple-arm64.dmg
+#        asset_content_type: application/x-diskcopy
+#      if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
 
