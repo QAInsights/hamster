@@ -79,7 +79,9 @@ jobs:
       if: github.ref == 'refs/heads/main'
       with:
         token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
+        body: 'Release for commit ${{ github.sha }}'
         tag_name: ${{ env.RELEASE_TAG }}
+        generate_release_notes: true
         files: |
           dist-arm64/Hamster-darwin.dmg
 
@@ -88,6 +90,8 @@ jobs:
       if: github.ref == 'refs/heads/main'
       with:
         token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
+        body: 'Release for commit ${{ github.sha }}'
+        generate_release_notes: true
         tag_name: ${{ env.RELEASE_TAG }}
         files: |
           dist-intel/Hamster-intel.dmg
