@@ -36,10 +36,10 @@ jobs:
         arch -x86_64 python setup.py py2app --arch x86_64
         mv dist dist-x86_64
 
-    - name: Generate app for arm64 architecture
-      run: |
-        arch -arm64 python setup.py py2app --arch arm64
-        mv dist dist-arm64
+    # - name: Generate app for arm64 architecture
+    #   run: |
+    #     arch -arm64 python setup.py py2app --arch arm64
+    #     mv dist dist-arm64
 
     - name: Upload x86_64 app
       uses: actions/upload-artifact@v2
@@ -47,11 +47,11 @@ jobs:
         name: dist-x86_64
         path: dist-x86_64
 
-    - name: Upload arm64 app
-      uses: actions/upload-artifact@v2
-      with:
-        name: dist-arm64
-        path: dist-arm64
+    # - name: Upload arm64 app
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: dist-arm64
+    #     path: dist-arm64
     
     
     # - name: Create Release
