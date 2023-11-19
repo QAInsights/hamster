@@ -68,3 +68,15 @@ jobs:
         path: dist-arm64/Hamster-darwin.dmg
       if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
 
+    # Create a release for intel and arm64 apps
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+
