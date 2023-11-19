@@ -38,7 +38,7 @@ jobs:
 
     - name: Generate app for arm64 architecture
       run: |
-        arch -arm64 python setup.py py2app --arch arm64
+        python setup.py py2app
         mv dist dist-arm64
 
     # - name: Upload x86_64 app
