@@ -79,7 +79,7 @@ jobs:
       if: github.ref == 'refs/heads/main'
       with:
         token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
-        tag_name: v${{ env.RELEASE_TAG }}
+        tag_name: ${{ env.RELEASE_TAG }}
         files: |
           dist-arm64/Hamster-darwin.dmg
 
@@ -88,6 +88,6 @@ jobs:
       if: github.ref == 'refs/heads/main'
       with:
         token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
-        tag_name: v${{ env.RELEASE_TAG }}
+        tag_name: ${{ env.RELEASE_TAG }}
         files: |
           dist-intel/Hamster-intel.dmg
