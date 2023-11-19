@@ -33,6 +33,7 @@ jobs:
 
     - name: Generate app for intel architecture
       run: |
+          uname -a
           python setup.py py2app
           mv dist dist-intel
       if: runner.os == 'macos'
