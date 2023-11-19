@@ -52,6 +52,10 @@ jobs:
         ls -la
         uname -a
         ls -la dist-arm64
+    
+    - name: Change mode of dist-arm64
+      run: |
+        chmod +x dist-arm64/Hamster.app/Contents/MacOS/hamster
 
     - name: Upload arm64 app
       uses: actions/upload-artifact@v2
