@@ -55,7 +55,8 @@ jobs:
     
     - name: Change mode of dist-arm64
       run: |
-        chmod +x dist-arm64/Hamster.app/Contents/MacOS/hamster
+        chmod +x dist-arm64/Hamster.app/Contents/MacOS/Hamster
+        chmod +x dist-arm64/Hamster.app/Contents/MacOS/python
 
     - name: Upload arm64 app
       uses: actions/upload-artifact@v2
