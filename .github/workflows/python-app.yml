@@ -69,13 +69,11 @@ jobs:
         path: dist-arm64/Hamster-darwin.dmg
       if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
 
-    - name: Create tag
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git tag v${{ github.run_number }}
-        git push origin v${{ github.run_number }}
-
+    - name: GitHub Tag
+      uses: mathieudutour/github-tag-action@v6.1
+      with:
+        tag: ${{ steps.tag_version.outputs.new_tag }}
+        github_token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
 
     - name: Release Darwin
       uses: softprops/action-gh-release@v1
