@@ -53,11 +53,9 @@ jobs:
         uname -a
         ls -la dist-arm64
     
-    - name: Change mode of dist-arm64
+    - name: Preserve permissions
       run: |
-        chmod +x dist-arm64/Hamster.app/Contents/MacOS/Hamster
-        chmod +x dist-arm64/Hamster.app/Contents/MacOS/python
-        ls -la dist-arm64/Hamster.app/Contents/MacOS/
+        chmod -R +x dist-arm64
 
     - name: Create tar file
       run: |
@@ -69,4 +67,5 @@ jobs:
       with:
         name: dist-arm64.tar.gz
         path: dist-arm64
-        preserve-permissions: true
+        
+        
