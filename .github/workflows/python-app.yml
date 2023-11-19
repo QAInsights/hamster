@@ -20,11 +20,6 @@ jobs:
       with:
         python-version: "3.10.11"
 
-    - name: List current directory
-      run: |
-        ls -la
-        uname -a
-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -45,5 +40,3 @@ jobs:
       with:
         name: Hamster
         path: dist-arm64/Hamster.dmg
-        
-        
