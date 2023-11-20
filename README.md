@@ -68,7 +68,7 @@ An app that puts your recent JMeter test plans just a click away from your Mac m
 ## 🎯 Points to Note
 
 - **Experimental App**: Please note that this application is experimental and may contain bugs. ⚠️
-- **MacOS**: This application is only for macOS. 🍎
+- **macOS**: This application is only for macOS. 🍎
 - **JMeter**: This application requires JMeter to be installed on your machine. 📥
 
 ## 🗒️ License
