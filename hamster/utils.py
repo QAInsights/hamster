@@ -89,7 +89,7 @@ def show_splash_screen():
     rumps.alert(title="Welcome to Hamster 🐹", message=welcome_message, icon_path=icon_path, ok="Got it!")
 
 
-# Function to update properties in app.properties
+# Function to update properties in .hamster_app.properties
 def update_properties(properties):
     for key, value in properties.items():
         config_parser['JMETER'][key] = value

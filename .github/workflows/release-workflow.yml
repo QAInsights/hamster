@@ -6,6 +6,8 @@ name: Hamster
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'README.md'
 
 jobs:
   build:
@@ -13,6 +15,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       RELEASE_TAG: v0.0.${{ github.run_number }}
+      INTEL_DMG: Hamster-x86-64-intel.dmg
+      ARM64_DMG: Hamster-arm64-silicon.dmg
 
     strategy:
       matrix:
@@ -46,12 +50,12 @@ jobs:
 
     - name: Convert dist-intel to DMG
       run: |
-        hdiutil create -volname "Hamster" -srcfolder dist-intel -ov -format UDZO dist-intel/Hamster-intel.dmg
+        hdiutil create -volname "Hamster" -srcfolder dist-intel -ov -format UDZO dist-intel/${{ env.INTEL_DMG }}
       if: matrix.os == 'macos' && matrix.arch == 'X64'
 
     - name: Convert dist-arm64 to DMG
       run: |
-        hdiutil create -volname "Hamster" -srcfolder dist-arm64 -ov -format UDZO dist-arm64/Hamster-darwin.dmg
+        hdiutil create -volname "Hamster" -srcfolder dist-arm64 -ov -format UDZO dist-arm64/${{ env.ARM64_DMG }}
       if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
 
     - name: Upload intel app
