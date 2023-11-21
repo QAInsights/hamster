@@ -94,11 +94,11 @@ def launch_test_plan(plan):
     jmeter_home = config_parser['JMETER']['HOME']
     jmeter_path = os.path.join(jmeter_home, 'bin', 'jmeter.bat')
     jmeter_logs = f'-j {jmeter_home}\jmeter.log'
-    print(f'Launching {jmeter_path}')
+    print(f'Launching {jmeter_path} -t {jmeter_plan}')
     if plan is None:
         subprocess.Popen([jmeter_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     else:
-        subprocess.Popen([jmeter_path, jmeter_logs, plan], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.Popen([jmeter_path, jmeter_logs, jmeter_plan], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return
 
 
@@ -136,9 +136,7 @@ def refresh_test_plans(icon, delay=5):
     global menu_items_dict
     time.sleep(delay)
     updated_test_plans = get_recent_test_plans()
-    refreshed_test_plans_menu_items = []
-    for idx, plan in enumerate(updated_test_plans, start=1):
-        refreshed_test_plans_menu_items.append(MenuItem(plan, action_recent_test_plan))
+    refreshed_test_plans_menu_items = [MenuItem(plan, action_recent_test_plan) for plan in updated_test_plans]
     menu_items_dict["Recent Test Plans"] = MenuItem('Recent Test Plans', Menu(*refreshed_test_plans_menu_items))
     icon.menu = Menu(*menu_items_dict.values())
 
@@ -146,11 +144,8 @@ def refresh_test_plans(icon, delay=5):
 def main():
     global menu_items_dict
     image = Image.open("hamster.png")
-    recent_test_plans_menu_items = []
-
     recent_test_plans = get_recent_test_plans()
-    for idx, plan in enumerate(recent_test_plans, start=1):
-        recent_test_plans_menu_items.append(MenuItem(plan, action_recent_test_plan))
+    recent_test_plans_menu_items = [MenuItem(plan, action_recent_test_plan) for plan in recent_test_plans]
 
     menu_items_dict.update({
         "Launch JMeter": MenuItem('🚀 Launch JMeter', action_launch_jmeter),
