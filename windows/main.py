@@ -89,16 +89,17 @@ def get_recent_test_plans():
 
 def launch_test_plan(plan):
     # launch jmeter with the test plan
-    jmeter_plan = f'-t {plan}'
+    jmeter_plan = f"{plan}"
     config_parser.read(properties_file_path)
     jmeter_home = config_parser['JMETER']['HOME']
-    jmeter_path = os.path.join(jmeter_home, 'bin', 'jmeter.bat')
-    jmeter_logs = f'-j {jmeter_home}\jmeter.log'
-    print(f'Launching {jmeter_path} -t {jmeter_plan}')
+    jmeter_bin = os.path.join(jmeter_home, 'bin')
+    jmeter_logs = os.path.join(jmeter_bin, 'jmeter.log')
+    jmeter_path = os.path.join(jmeter_bin, 'jmeter.bat')
     if plan is None:
         subprocess.Popen([jmeter_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     else:
-        subprocess.Popen([jmeter_path, jmeter_logs, jmeter_plan], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        print(f'Launching JMeter with {jmeter_path} {jmeter_logs} {jmeter_plan} ')
+        subprocess.Popen([jmeter_path, "-j", jmeter_logs, "-t", plan], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return
 
 
