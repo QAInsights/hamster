@@ -3,12 +3,12 @@ from collections import OrderedDict
 from PIL import Image
 from pystray import MenuItem, Menu, Icon
 
-from config import app_title, app_caption
+from config import AppConfig
 from utils import get_recent_test_plans, create_app_data_dir, action_launch_jmeter, action_recent_test_plan, \
-    action_view_config, action_edit_config, action_refresh, action_quit
+    action_view_config, action_edit_config, action_refresh, action_quit, action_help, action_about, action_sponsor
 
 menu_items_dict = OrderedDict()
-
+app_config = AppConfig()
 
 def main():
     """
@@ -30,6 +30,9 @@ def main():
         "Configure JMETER_HOME": MenuItem('Configure JMETER_HOME', action_edit_config),
         "Seperator02": Menu.SEPARATOR,
         "Refresh": MenuItem('Refresh', action_refresh),
+        "Buy me a coffee": MenuItem('☕ Buy me a coffee', action_sponsor),
+        "Help": MenuItem('Help', action_help),
+        "About": MenuItem('About', action_about),
         "Quit": MenuItem('Quit', action_quit)
     })
 
@@ -37,7 +40,7 @@ def main():
     menu = Menu(*menu_items_dict.values())
 
     # Create the icon with the menu
-    icon = Icon("Hamster", image, f"{app_title} - {app_caption}", menu)
+    icon = Icon("Hamster", image, f"{app_config.app_title} - {app_config.app_caption}", menu)
     icon.run()
 
 

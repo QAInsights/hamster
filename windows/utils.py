@@ -4,17 +4,18 @@ import re
 import shutil
 import subprocess
 import time
+import webbrowser
 import winreg
 import logging
 
 from collections import OrderedDict
 from contextlib import suppress
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, Text
+from config import AppConfig
+
+app_config = AppConfig()
 
 from pystray import MenuItem, Menu
-
-from config import home_dir, app_title, app_properties_template, win_app_properties, \
-    jmeter_recent_files_pattern
 
 # Create a logger
 logger = logging.getLogger(__name__)
@@ -35,8 +36,8 @@ logger.addHandler(handler)
 menu_items_dict = OrderedDict()
 
 config_parser = configparser.ConfigParser()
-properties_folder_path = os.path.join(home_dir, 'Appdata', 'Local', app_title)
-properties_file_path = os.path.join(home_dir, 'Appdata', 'Local', app_title, win_app_properties)
+properties_folder_path = os.path.join(app_config.home_dir, 'Appdata', 'Local', app_config.app_title)
+properties_file_path = os.path.join(app_config.home_dir, 'Appdata', 'Local', app_config.app_title, app_config.win_app_properties)
 
 
 def create_app_data_dir():
@@ -49,12 +50,12 @@ def create_app_data_dir():
     if not os.path.exists(properties_folder_path):
         os.makedirs(properties_folder_path)
         # check for ini file inside the app data dir
-    if not os.path.exists(os.path.join(properties_folder_path, win_app_properties)):
+    if not os.path.exists(os.path.join(properties_folder_path, app_config.win_app_properties)):
         # copy the hamster_app.properties file to the app data dir
-        logger.info(f'Copying {app_properties_template} to {properties_folder_path}')
+        logger.info(f'Copying { app_config.app_properties_template} to { app_config.properties_folder_path}')
 
-        source_file = os.path.join(os.getcwd(), app_properties_template)
-        destination_file = os.path.join(properties_folder_path, win_app_properties)
+        source_file = os.path.join(os.getcwd(),  app_config.app_properties_template)
+        destination_file = os.path.join(properties_folder_path,  app_config.win_app_properties)
         logger.info(f'Copying {source_file} to {destination_file}')
         shutil.copyfile(source_file, destination_file)
         logger.info(f'Copied {source_file} to {destination_file}')
@@ -104,7 +105,7 @@ def get_recent_test_plans():
             while True:
                 try:
                     value_name, value_data, _ = winreg.EnumValue(key, index)
-                    if re.match(jmeter_recent_files_pattern, value_name):
+                    if re.match( app_config.jmeter_recent_files_pattern, value_name):
                         clean_jmeter_path = value_data.replace('///', '\\').replace('//', '\\').replace('/', '')
                         recent_test_plans.append(clean_jmeter_path)
                     index += 1
@@ -194,7 +195,7 @@ def action_view_config():
 
     """
     __jmeter_home = read_properties()
-    messagebox.showinfo("Hamster Config", f"JMeter Home: {__jmeter_home}")
+    messagebox.showinfo("Hamster Config", f"JMETER_HOME: {__jmeter_home}")
 
 
 def action_edit_config():
@@ -205,7 +206,7 @@ def action_edit_config():
     """
     _default_jmeter_home = read_properties()
     _jmeter_home = filedialog.askdirectory(initialdir=_default_jmeter_home, mustexist=True,
-                                           title=f"{app_title} - Configure JMETER_HOME")
+                                           title=f"{ app_config.app_title} - Configure JMETER_HOME")
     if _jmeter_home:
         update_properties({'HOME': str(_jmeter_home).strip()})
 
@@ -221,6 +222,34 @@ def action_quit(icon, _):
 
     """
     icon.stop()
+
+
+def action_help(help_text=None):
+    """
+    Displays the `help` dialog
+    Returns:
+
+    """
+    messagebox.showinfo(f"About {app_config.app_title_emoji}", message=app_config.help_text, icon='info')
+    # Text().insert(tkinter.INSERT, chars=help_text)
+
+
+def action_about():
+    """
+    Displays the `about` dialog
+    Returns:
+
+    """
+    messagebox.showinfo(f"About {app_config.app_title_emoji} - v{app_config.app_version}", f"{app_config.about_text}", icon='info')
+
+
+def action_sponsor():
+    """
+    Opens the `buy me a coffee` link
+    Returns:
+
+    """
+    webbrowser.open_new_tab(app_config.buy_me_a_coffee_url)
 
 
 def refresh_test_plans(icon, delay=5):
