@@ -1,14 +1,10 @@
-from collections import OrderedDict
-
 from PIL import Image
 from pystray import MenuItem, Menu, Icon
 
-from config import AppConfig
+from config import app_config
 from utils import get_recent_test_plans, create_app_data_dir, action_launch_jmeter, action_recent_test_plan, \
     action_view_config, action_edit_config, action_refresh, action_quit, action_help, action_about, action_sponsor
 
-menu_items_dict = OrderedDict()
-app_config = AppConfig()
 
 def main():
     """
@@ -17,12 +13,12 @@ def main():
     Returns:
 
     """
-    global menu_items_dict
+    # argv impl
     image = Image.open("img/hamster.png")
     recent_test_plans = get_recent_test_plans()
     recent_test_plans_menu_items = [MenuItem(plan, action_recent_test_plan) for plan in recent_test_plans]
 
-    menu_items_dict.update({
+    app_config.menu_items_dict.update({
         "Launch JMeter": MenuItem('🚀 Launch JMeter', action_launch_jmeter),
         "Recent Test Plans": MenuItem('Recent Test Plans', Menu(*recent_test_plans_menu_items)),
         "Seperator01": Menu.SEPARATOR,
@@ -37,7 +33,7 @@ def main():
     })
 
     # Create the menu with the menu items
-    menu = Menu(*menu_items_dict.values())
+    menu = Menu(*app_config.menu_items_dict.values())
 
     # Create the icon with the menu
     icon = Icon("Hamster", image, f"{app_config.app_title} - {app_config.app_caption}", menu)

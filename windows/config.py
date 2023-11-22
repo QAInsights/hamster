@@ -1,5 +1,8 @@
-from pathlib import Path
 import re
+
+from collections import OrderedDict
+from pathlib import Path
+from windows import __VERSION__
 
 
 class AppConfig:
@@ -11,11 +14,12 @@ class AppConfig:
         self.app_properties_template = "hamster_app.properties"
         self.win_app_properties = self.app_properties_template.replace(".properties", ".ini")
         self.home_dir = Path.home()
+        self.menu_items_dict = OrderedDict()
 
         self.jmeter_recent_files_pattern = re.compile("recent_file_.*")
-        self.app_version = '0.1'
+        self.app_version = __VERSION__
         self.buy_me_a_coffee_url = 'https://www.buymeacoffee.com/QAInsights'
-        self.authors = ['NaveenKumar Namachivayam', 'Leela Prasad']
+        self.authors = ['NaveenKumar Namachivayam', 'Leela Prasad Vadla']
         self.about_website = 'https://QAInsights.com'
 
     @property
@@ -41,3 +45,6 @@ Hamster is a menu bar app to instantly launch JMeter test plans.\n\n
 7. To refresh the recent test plans, click on `Hamster > Restart`\n
 8. To quit Hamster, click on `Hamster > Quit`\n
         '''
+
+
+app_config = AppConfig()

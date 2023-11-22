@@ -10,12 +10,9 @@ import logging
 
 from collections import OrderedDict
 from contextlib import suppress
-from tkinter import filedialog, messagebox, Text
-from config import AppConfig
-
-app_config = AppConfig()
-
+from tkinter import filedialog, messagebox
 from pystray import MenuItem, Menu
+from config import app_config
 
 # Create a logger
 logger = logging.getLogger(__name__)
@@ -24,7 +21,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 # Create a file handler
-handler = logging.FileHandler('app.log')
+handler = logging.FileHandler(os.path.join(app_config.home_dir, 'Appdata', 'Local', 'hamster.log'))
 
 # Create a logging format
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -123,29 +120,25 @@ def get_recent_test_plans():
     return recent_test_plans
 
 
-def launch_test_plan(plan):
+def launch_test_plan(test_plan=None):
     """
     Launches JMeter with the selected test plan
     Args:
-        plan:
-
-    Returns:
-
+        test_plan:
     """
     # launch jmeter with the test plan
-    jmeter_plan = f"{plan}"
+    jmeter_plan = f"{test_plan}"
     config_parser.read(properties_file_path)
     jmeter_home = config_parser['JMETER']['HOME']
     jmeter_bin = os.path.join(jmeter_home, 'bin')
     jmeter_logs = os.path.join(jmeter_bin, 'jmeter.log')
     jmeter_path = os.path.join(jmeter_bin, 'jmeter.bat')
-    if plan is None:
+    if not test_plan:
         subprocess.Popen([jmeter_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     else:
         logger.info(f'Launching JMeter with {jmeter_path} {jmeter_logs} {jmeter_plan} ')
-        subprocess.Popen([jmeter_path, "-j", jmeter_logs, "-t", plan], stdout=subprocess.DEVNULL,
+        subprocess.Popen([jmeter_path, "-j", jmeter_logs, "-t", test_plan], stdout=subprocess.DEVNULL,
                          stderr=subprocess.DEVNULL)
-    return
 
 
 def action_launch_jmeter(icon, menu_item):
@@ -158,7 +151,7 @@ def action_launch_jmeter(icon, menu_item):
     Returns:
 
     """
-    launch_test_plan(plan=None)
+    launch_test_plan()
 
 
 def action_recent_test_plan(icon, menu_item):
@@ -231,7 +224,6 @@ def action_help(help_text=None):
 
     """
     messagebox.showinfo(f"About {app_config.app_title_emoji}", message=app_config.help_text, icon='info')
-    # Text().insert(tkinter.INSERT, chars=help_text)
 
 
 def action_about():
@@ -262,9 +254,8 @@ def refresh_test_plans(icon, delay=5):
     Returns:
 
     """
-    global menu_items_dict
     time.sleep(delay)
     updated_test_plans = get_recent_test_plans()
-    refreshed_test_plans_menu_items = [MenuItem(plan, action_recent_test_plan) for plan in updated_test_plans]
-    menu_items_dict["Recent Test Plans"] = MenuItem('Recent Test Plans', Menu(*refreshed_test_plans_menu_items))
-    icon.menu = Menu(*menu_items_dict.values())
+    refreshed_test_plans_menu = [MenuItem(plan, action_recent_test_plan) for plan in updated_test_plans]
+    app_config.menu_items_dict["Recent Test Plans"] = MenuItem('Recent Test Plans', Menu(*refreshed_test_plans_menu))
+    icon.menu = Menu(*app_config.menu_items_dict.values())
