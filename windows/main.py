@@ -14,7 +14,7 @@ def main():
 
     """
     # argv impl
-    image = Image.open("img/hamster.png")
+    image = Image.open("hamster.png")
     recent_test_plans = get_recent_test_plans()
     recent_test_plans_menu_items = [MenuItem(plan, action_recent_test_plan) for plan in recent_test_plans]
 
