@@ -14,7 +14,7 @@ bdist_msi_options = {
 }
 
 build_exe_options = {
-    "include_files": ["assets\hamster.png",
+    "include_files": ["windows\\hamster.png",
                       "config.py",
                       "utils.py",
                       "hamster_app.properties",
