@@ -5,9 +5,9 @@ name: Hamster
 
 on:
   push:
-    branches: [ "feature/windows" ]
+    branches: [ "main" ]
     paths-ignore:
-      - '**/README.md'
+      - '**/**.md'
 
 jobs:
   build:
@@ -20,27 +20,22 @@ jobs:
 
     strategy:
       matrix:
-        os: [ windows-latest ]
-        arch: [ 'X86' ]
-#        os: [ self-hosted, macos, windows ]
-#        arch: [ 'X64', 'ARM64', 'X86' ]
+#        os: [ windows-latest ]
+#        arch: [ 'X86' ]
+        os: [ self-hosted, macos, windows ]
+        arch: [ 'X64', 'ARM64', 'X86' ]
 
     steps:
-    - name: Checkout feature/windows branch
-      uses: actions/checkout@v3
-      with:
-        ref: feature/windows
+#    - name: Checkout feature/windows branch
+#      uses: actions/checkout@v3
+#      with:
+#        ref: feature/windows
 
+    - uses: actions/checkout@v3
     - name: Set up Python 3.10.11
       uses: actions/setup-python@v3
       with:
         python-version: "3.10.11"
-
-#    - uses: actions/checkout@v3
-#    - name: Set up Python 3.10.11
-#      uses: actions/setup-python@v3
-#      with:
-#        python-version: "3.10.11"
 
     - name: Install dependencies in Windows
       run: |
