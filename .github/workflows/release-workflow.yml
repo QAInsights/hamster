@@ -22,7 +22,7 @@ jobs:
       matrix:
 #        os: [ windows-latest ]
 #        arch: [ 'X86' ]
-        os: [ self-hosted, macos, windows ]
+        os: [ self-hosted, macos, windows-latest ]
         arch: [ 'X64', 'ARM64', 'X86' ]
 
     steps:
