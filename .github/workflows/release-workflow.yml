@@ -20,8 +20,10 @@ jobs:
 
     strategy:
       matrix:
-        os: [ self-hosted, macos, windows ]
-        arch: [ 'X64', 'ARM64', 'X86' ]
+        os: [ windows-latest ]
+        arch: [ 'X86' ]
+#        os: [ self-hosted, macos, windows ]
+#        arch: [ 'X64', 'ARM64', 'X86' ]
 
     steps:
     - uses: actions/checkout@v3
