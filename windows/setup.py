@@ -14,5 +14,10 @@ setup(
     version="0.0.1",
     description="Instantly Launch JMeter Test Plans 🚀",
     options={"build_exe": build_exe_options},
-    executables=[Executable("main.py", base=base)],
+    executables=[
+        Executable("windows/main.py", base=base),
+        Executable("windows/config.py", base=base),
+        Executable("windows/utils.py", base=base),
+        Executable("windows/__init__.py", base=base),
+    ],
 )
