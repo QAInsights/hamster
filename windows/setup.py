@@ -3,7 +3,8 @@ from cx_Freeze import setup, Executable
 # from windows import __VERSION__
 
 build_exe_options = {
-    "include_files": ["img\\hamster.png"]
+    "include_files": ["img/hamster.png"]
+
 }
 
 base = "Win32GUI" if sys.platform == "win32" else None
