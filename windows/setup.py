@@ -40,5 +40,5 @@ setup(
         "bdist_msi": bdist_msi_options,
     },
     executables=executables,
-    packages=["../windows"]
+    packages=["windows"]
 )
