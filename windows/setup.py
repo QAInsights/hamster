@@ -1,6 +1,6 @@
 import sys
 from cx_Freeze import setup, Executable
-from windows import __VERSION__
+from ..windows import __VERSION__
 
 build_exe_options = {
     "include_files": [".\\img\\hamster.png",
