@@ -66,6 +66,7 @@ jobs:
       run: |
         python .\windows\setup.py bdist_msi
         mv dist dist-windows
+      if: matrix.os == 'windows'
 
     - name: Convert dist-intel to DMG
       run: |
@@ -96,6 +97,7 @@ jobs:
       with:
           name: Hamster-windows-x86_64
           path: dist-windows/Hamster-*.msi
+      if: matrix.os == 'windows'
 
     - name: GitHub Tag
       uses: mathieudutour/github-tag-action@v6.1
@@ -105,7 +107,7 @@ jobs:
 
     - name: Release Darwin
       uses: softprops/action-gh-release@v1
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/main' && matrix.os == 'macos' && matrix.arch == 'ARM64'
       with:
         token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
         body: 'Release for commit ${{ github.sha }}'
@@ -116,7 +118,7 @@ jobs:
 
     - name: Release Intel
       uses: softprops/action-gh-release@v1
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/main' && matrix.os == 'macos' && matrix.arch == 'X64'
       with:
         token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
         body: 'Release for commit ${{ github.sha }}'
@@ -127,7 +129,7 @@ jobs:
 
     - name: Release Windows
       uses: softprops/action-gh-release@v1
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/main' && matrix.os == 'windows'
       with:
         token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
         body: 'Release for commit ${{ github.sha }}'
