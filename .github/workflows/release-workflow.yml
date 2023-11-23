@@ -5,7 +5,7 @@ name: Hamster
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "feature/windows" ]
     paths-ignore:
       - '**/README.md'
 
@@ -20,8 +20,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [ self-hosted, macos ]
-        arch: [ 'X64', 'ARM64' ]
+        os: [ self-hosted, macos, windows ]
+        arch: [ 'X64', 'ARM64', 'X86' ]
 
     steps:
     - uses: actions/checkout@v3
@@ -48,6 +48,12 @@ jobs:
         mv dist dist-arm64
       if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
 
+    - name: Generate app for windows
+      run: |
+          python windows\setup.py bdist_msi
+          mv dist dist-windows
+      if: matrix.os == 'windows' && matrix.arch == 'X86'
+
     - name: Convert dist-intel to DMG
       run: |
         hdiutil create -volname "Hamster" -srcfolder dist-intel -ov -format UDZO dist-intel/${{ env.INTEL_DMG }}
@@ -71,6 +77,13 @@ jobs:
         name: Hamster-macos-apple-arm64
         path: dist-arm64/Hamster-darwin.dmg
       if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
+
+    - name: Upload windows app
+      uses: actions/upload-artifact@v2
+      with:
+          name: Hamster-windows-x86_64
+          path: dist-windows/Hamster-*.msi
+      if: matrix.os == 'windows' && matrix.arch == 'X86'
 
     - name: GitHub Tag
       uses: mathieudutour/github-tag-action@v6.1
@@ -99,3 +112,14 @@ jobs:
         tag_name: ${{ env.RELEASE_TAG }}
         files: |
           dist-intel/${{ env.INTEL_DMG }}
+
+    - name: Release Windows
+      uses: softprops/action-gh-release@v1
+      if: github.ref == 'refs/heads/main'
+      with:
+          token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
+          body: 'Release for commit ${{ github.sha }}'
+          generate_release_notes: true
+          tag_name: ${{ env.RELEASE_TAG }}
+          files: |
+            dist-windows/Hamster-*.msi
