@@ -68,7 +68,7 @@ jobs:
 
     - name: Generate app for windows
       run: |
-        python setup.py bdist_msi
+        python .\windows\setup.py bdist_msi
         mv dist dist-windows
 
     - name: Convert dist-intel to DMG
