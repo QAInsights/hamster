@@ -24,7 +24,7 @@ base = "Win32GUI" if sys.platform == "win32" else None
 
 executables = [
        Executable(
-            "main.py",
+            "windows\\main.py",
             copyright="Copyright (C) 2023 cx_Freeze",
             base=base,
             shortcut_name="Hamster",
