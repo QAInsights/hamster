@@ -82,14 +82,14 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Hamster-macos-intel-x86_64
-        path: dist-intel/Hamster-intel.dmg
+        path: dist-intel/${{ env.INTEL_DMG }}
       if: matrix.os == 'macos' && matrix.arch == 'X64'
 
     - name: Upload arm64 app
       uses: actions/upload-artifact@v2
       with:
         name: Hamster-macos-apple-arm64
-        path: dist-arm64/Hamster-darwin.dmg
+        path: dist-arm64/${{ env.ARM64_DMG }}
       if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
 
     - name: Upload windows app
