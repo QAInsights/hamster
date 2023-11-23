@@ -15,9 +15,9 @@ bdist_msi_options = {
 
 build_exe_options = {
     "include_files": ["windows\\hamster.png",
-                      "config.py",
-                      "utils.py",
-                      "hamster_app.properties",
+                      "windows\\config.py",
+                      "windows\\utils.py",
+                      "windows\\hamster_app.properties",
                       ],
 }
 base = "Win32GUI" if sys.platform == "win32" else None
