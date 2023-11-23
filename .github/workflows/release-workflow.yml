@@ -107,7 +107,7 @@ jobs:
 
     - name: Release Darwin
       uses: softprops/action-gh-release@v1
-      if: github.ref == 'refs/heads/main' && matrix.os == 'macos' && matrix.arch == 'ARM64'
+      if: github.ref == 'refs/heads/main' && matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
       with:
         token: ${{ secrets.HAMSTER_APP_RELEASE_SECRET }}
         body: 'Release for commit ${{ github.sha }}'
