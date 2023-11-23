@@ -3,7 +3,7 @@ from cx_Freeze import setup, Executable
 # from windows import __VERSION__
 
 build_exe_options = {
-    "include_files": [".\\img\\hamster.png",
+    "include_files": ["img\\hamster.png",
                       "config.py",
                       "utils.py",
                       "__init__.py",
