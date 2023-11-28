@@ -15,13 +15,13 @@ home_dir = os.path.expanduser("~")
 source_path = os.path.join(os.path.dirname(sys.argv[0]), app_properties_template)
 
 # Define the destination path (user's home directory)
-destination_path = os.path.join(home_dir, app_properties_template)
+properties_file_path = os.path.join(home_dir, app_properties_template)
 
-# Use shutil to copy the file
-shutil.copy(source_path, destination_path)
+# Use shutil to copy the file if file doesn't exist
+if not os.path.exists(properties_file_path):
+    shutil.copy(source_path, properties_file_path)
 
 config_parser = configparser.ConfigParser()
-properties_file_path = os.path.join(home_dir, app_properties_template)
 config_parser.read(properties_file_path)
 
 icon_path = os.path.join(os.path.dirname(sys.argv[0]), 'img/hamster.png')
