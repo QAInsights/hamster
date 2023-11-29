@@ -14,7 +14,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     env:
-      RELEASE_TAG: v0.1.0
+      RELEASE_TAG: 0.1.0
       INTEL_DMG: Hamster-x86-64-intel.dmg
       ARM64_DMG: Hamster-arm64-silicon.dmg
 
