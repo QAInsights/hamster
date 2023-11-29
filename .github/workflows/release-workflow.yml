@@ -8,13 +8,15 @@ on:
     branches: [ "main" ]
     paths-ignore:
       - '**/**.md'
+env:
+  HAMSTER_APP_VERSION: 0.1.0
 
 jobs:
   build:
 
     runs-on: ${{ matrix.os }}
     env:
-      RELEASE_TAG: v0.0.${{ github.run_number }}
+      RELEASE_TAG: v${{ HAMSTER_APP_VERSION }}
       INTEL_DMG: Hamster-x86-64-intel.dmg
       ARM64_DMG: Hamster-arm64-silicon.dmg
 

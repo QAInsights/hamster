@@ -1,7 +1,10 @@
+import webbrowser
+
 import rumps
 import subprocess
 from utils import update_properties, show_splash_screen, prechecks, get_recent_jmeter_test_plans, sleep
 from config import jmeter_path, icon_path, properties_file_path, config_parser, jmeter_plist
+from config import app_config
 
 
 class DynamicMenuApp(rumps.App):
@@ -21,10 +24,11 @@ class DynamicMenuApp(rumps.App):
         just_jmeter(self, _): Launches JMeter without any test plan.
         about(self, _): Displays information about the application.
     """
+
     def __init__(self, title):
         super(DynamicMenuApp, self).__init__(title, icon=icon_path, quit_button='Quit')
         self.menu = ['Launch JMeter', 'Recent Test Plans', None, 'View Config', 'Edit JMETER_HOME', None,
-                     'Refresh', 'Help', 'About']
+                     'Refresh', 'Buy me a Coffee', 'Help', 'About']
         self.jmeter_home, self.jmeter_bin = jmeter_path()
         prechecks(jmeter_plist, self.jmeter_home, self.jmeter_bin)
         self.refresh_test_plans(delay=1)
@@ -103,11 +107,12 @@ class DynamicMenuApp(rumps.App):
         Callback function for menu items.
         """
         try:
-            subprocess.Popen([self.jmeter_bin, '-t', sender.title], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.Popen([self.jmeter_bin, '-t', sender.title], stdout=subprocess.DEVNULL,
+                             stderr=subprocess.DEVNULL)
             self.refresh_test_plans()
         except Exception as e:
             rumps.alert("Error", e)
-    
+
     @rumps.clicked("Launch JMeter")
     def just_jmeter(self, _):
         """
@@ -117,11 +122,17 @@ class DynamicMenuApp(rumps.App):
             subprocess.Popen([self.jmeter_bin], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         except Exception as e:
             rumps.alert("Error", e)
-    
+
+    @rumps.clicked("Buy me a Coffee")
+    def sponsor(self, _):
+        """
+        Displays information about the application.
+        """
+        webbrowser.open_new_tab(app_config.buy_me_a_coffee_url)
+
     @rumps.clicked("About")
     def about(self, _):
         """
         Displays information about the application.
         """
-        rumps.alert("Hamster - instantly launch JMeter test plans 🚀", \
-                    "Version 0.1\n\nAuthor: NaveenKumar Namachivayam\n\nhttps://qainsights.com", icon_path=icon_path)
+        rumps.alert("About", f"{app_config.about_text}\n\n v{app_config.app_version}", icon_path=icon_path)
