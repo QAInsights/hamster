@@ -28,7 +28,7 @@ def get_recent_jmeter_test_plans():
         a single string indicating that no recent JMeter test plans files were found.
     """
     config_parser.read(properties_file_path)
-    
+
     recent_files = []
 
     p = Path(jmeter_plist)
@@ -37,16 +37,17 @@ def get_recent_jmeter_test_plans():
         try:
             with open(jmeter_plist, 'rb') as fp:
                 pl = plistlib.load(fp)
-                recent_files = {k: v for k, v in pl['/org/apache/jmeter/']["gui/"]["action/"].items() if pattern.match(k)}
+                recent_files = {k: v for k, v in pl['/org/apache/jmeter/']["gui/"]["action/"].items() if
+                                pattern.match(k)}
 
                 # escape file names with spaces
                 recent_files = {k: v for k, v in recent_files.items()}
                 recent_files = dict(sorted(recent_files.items()))
                 recent_files = list(recent_files.values())
-                
+
         except Exception as e:
             rumps.alert("Error", e)
-        
+
     return recent_files
 
 
@@ -96,3 +97,11 @@ def update_properties(properties):
 
     with open(properties_file_path, 'w') as config_file:
         config_parser.write(config_file)
+
+
+def get_telemetry_config():
+    """
+    Returns the telemetry configuration.
+    """
+    config_parser.read(properties_file_path)
+    return config_parser.getboolean('TELEMETRY', 'enabled')
