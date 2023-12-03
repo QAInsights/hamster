@@ -5,6 +5,8 @@ import getpass
 import re
 import shutil
 import uuid
+from pathlib import Path
+
 from __version__ import __version__
 
 
@@ -19,6 +21,7 @@ class AppConfig:
         self.authors = ['NaveenKumar Namachivayam', 'Leela Prasad Vadla']
         self.about_website = 'https://QAInsights.com'
         self.app_uuid = str(uuid.uuid4())
+        self.home_dir = Path.home()
 
     @property
     def authors_str(self):
@@ -72,6 +75,7 @@ jmeter_plist = f"/Users/{username}/Library/Preferences/org.apache.jmeter.plist"
 app_config = AppConfig()
 uuid = app_config.app_uuid
 
+
 def jmeter_path():
     jmeter_home = config_parser.get('JMETER', 'HOME').strip()
 
@@ -79,4 +83,3 @@ def jmeter_path():
         jmeter_home = jmeter_home.rstrip('/')
     jmeter_bin = jmeter_home + '/bin/jmeter'
     return jmeter_home, jmeter_bin
-

@@ -1,5 +1,7 @@
 import os
 import webbrowser
+import logging
+
 from functools import wraps
 
 import rumps
@@ -13,6 +15,22 @@ from mixpanel import Mixpanel
 
 mp = Mixpanel(os.environ.get('MIXPANEL_TOKEN'))
 
+# Create a logger
+logger = logging.getLogger(__name__)
+
+# Set the log level
+logger.setLevel(logging.DEBUG)
+
+# Create a file handler
+handler = logging.FileHandler(os.path.join(app_config.home_dir, 'hamster.log'))
+
+# Create a logging format
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+# Add the handlers to the logger
+logger.addHandler(handler)
+
 
 def track(ids, menu_item):
     telemetry_enabled = get_telemetry_config()
@@ -20,11 +38,16 @@ def track(ids, menu_item):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            if telemetry_enabled:
-                mp.track(ids, menu_item)
-            return func(*args, **kwargs)
+            try:
+                if telemetry_enabled:
+                    mp.track(ids, menu_item)
+                    logger.info(f"Clicked {menu_item}")
+                    return func(*args, **kwargs)
+            except Exception as e:
+                logger.error(e)
 
         return wrapper
+
     return decorator
 
 
