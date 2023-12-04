@@ -71,6 +71,26 @@ An app that puts your recent JMeter test plans just a click away from your Mac m
 - **macOS**: This application is only for macOS. 🍎
 - **JMeter**: This application requires JMeter to be installed on your machine. 📥
 
+## 🔍 Telemetry
+
+- Hamster collects anonymous usage data to improve the app. 📊
+  - The data collected is the menu clicks only.
+- You can opt-out of telemetry by configuring `False` in `~/.hamster_app.properties` file.
+- You can opt-in of telemetry by configuring `True` in `~/.hamster_app.properties` file.
+
+## 🧩 Windows Vs Mac app features
+
+| Features                       | Windows | Mac |
+|--------------------------------|---------|-----|
+| Launch JMeter                  | ✅       | ✅   |
+| Launch JMeter Recent Test Plan | ✅       | ✅   |
+| Edit JMeter Home               | ✅       | ✅   |
+| View Config                    | ✅       | ✅   |
+| Refresh                        | ✅       | ✅   |
+| Telemetry                      | ❌       | ✅   |
+| Updates                       | ❌       | ❌  |
+
+
 ## 🗒️ License
 - Apache 2 License
 

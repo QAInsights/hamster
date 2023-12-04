@@ -10,6 +10,10 @@ from pathlib import Path
 from __version__ import __version__
 
 
+def create_log_dir():
+    Path(app_config.log_dir).mkdir(parents=True, exist_ok=True)
+
+
 class AppConfig:
     def __init__(self):
         self.app_title = 'Hamster'
@@ -21,7 +25,8 @@ class AppConfig:
         self.authors = ['NaveenKumar Namachivayam', 'Leela Prasad Vadla']
         self.about_website = 'https://QAInsights.com'
         self.app_uuid = str(uuid.uuid4())
-        self.home_dir = Path.home()
+        self.log_dir = os.path.join(os.path.expanduser("~"), 'hamster_logs')
+
 
     @property
     def authors_str(self):
@@ -73,6 +78,8 @@ pattern = re.compile("recent_file_.*")
 jmeter_plist = f"/Users/{username}/Library/Preferences/org.apache.jmeter.plist"
 
 app_config = AppConfig()
+create_log_dir()
+
 uuid = app_config.app_uuid
 
 
@@ -83,3 +90,6 @@ def jmeter_path():
         jmeter_home = jmeter_home.rstrip('/')
     jmeter_bin = jmeter_home + '/bin/jmeter'
     return jmeter_home, jmeter_bin
+
+
+

@@ -1,9 +1,27 @@
+import logging
 import plistlib
 import time
 import rumps
-
+import os
+from config import app_config
 from pathlib import Path
 from config import properties_file_path, config_parser, jmeter_plist, pattern, icon_path
+
+# Create a logger
+logger = logging.getLogger(__name__)
+
+# Set the log level
+logger.setLevel(logging.DEBUG)
+
+# Create a file handler
+handler = logging.FileHandler(os.path.join(app_config.log_dir, 'hamster.log'))
+
+# Create a logging format
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+# Add the handlers to the logger
+logger.addHandler(handler)
 
 
 def sleep(delay=1):
@@ -103,5 +121,11 @@ def get_telemetry_config():
     """
     Returns the telemetry configuration.
     """
-    config_parser.read(properties_file_path)
-    return config_parser.getboolean('TELEMETRY', 'enabled')
+
+    try:
+        config_parser.read(properties_file_path)
+        return config_parser.getboolean('TELEMETRY', 'enabled')
+    except Exception as e:
+        logging.error(f"{e} Telemetry config not found. Setting telemetry to False.")
+        return False
+
