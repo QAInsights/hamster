@@ -34,6 +34,7 @@ logger.addHandler(handler)
 
 def track(ids, menu_item):
     telemetry_enabled = get_telemetry_config()
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
