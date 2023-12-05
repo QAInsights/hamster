@@ -11,6 +11,7 @@ An app that puts your recent JMeter test plans just a click away from your Mac m
 - [Build](#-build)
 - [Install](#-install)
 - [Points to Note](#-points-to-note)
+- [Telemetry](#-telemetry)
 - [License](#-license)
 - [Sponsor](#-sponsor)
 
