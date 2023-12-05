@@ -21,17 +21,10 @@ jobs:
 
     strategy:
       matrix:
-#        os: [ windows-latest ]
-#        arch: [ 'X86' ]
         os: [ self-hosted, macos, windows-latest ]
         arch: [ 'X64', 'ARM64', 'X86' ]
 
     steps:
-#    - name: Checkout feature/windows branch
-#      uses: actions/checkout@v3
-#      with:
-#        ref: feature/windows
-
     - uses: actions/checkout@v3
     - name: Set up Python 3.10.11
       uses: actions/setup-python@v3
@@ -47,6 +40,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        echo $MIXPANEL_TOKEN
         pip install py2app
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       if: matrix.os == 'macos' || matrix.os == 'self-hosted'
