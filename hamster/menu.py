@@ -1,7 +1,7 @@
 import os
 import webbrowser
 import logging
-
+import requests
 from functools import wraps
 
 import rumps
@@ -10,10 +10,6 @@ from utils import update_properties, show_splash_screen, prechecks, get_recent_j
     get_telemetry_config
 from config import jmeter_path, icon_path, properties_file_path, config_parser, jmeter_plist
 from config import app_config, uuid
-
-from mixpanel import Mixpanel
-
-mp = Mixpanel(os.environ.get('MIXPANEL_TOKEN'))
 
 # Create a logger
 logger = logging.getLogger(__name__)
@@ -40,9 +36,20 @@ def track(ids, menu_item):
         def wrapper(*args, **kwargs):
             try:
                 if telemetry_enabled:
-                    mp.track(ids, menu_item)
-                    logger.info(f"Clicked {menu_item}")
-                    return func(*args, **kwargs)
+                    # Call AWS Lambda function
+                    try:
+                        if menu_item in app_config.valid_events:
+                            requests.post(app_config.telemetry_url, json={
+                            "uuid": ids,
+                            "menu_item": menu_item
+                            })
+
+                            logger.info(f'Clicked {menu_item}')
+                            return func(*args, **kwargs)
+
+                    except Exception as e:
+                        logger.error(e)
+
                 else:
                     logger.info(f"Telemetry is disabled. Not tracking {menu_item}")
                     return func(*args, **kwargs)
@@ -50,7 +57,6 @@ def track(ids, menu_item):
                 logger.error(e)
 
         return wrapper
-
     return decorator
 
 

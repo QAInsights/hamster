@@ -25,8 +25,10 @@ class AppConfig:
         self.authors = ['NaveenKumar Namachivayam', 'Leela Prasad Vadla']
         self.about_website = 'https://QAInsights.com'
         self.app_uuid = str(uuid.uuid4())
+        self.telemetry_url = 'https://dcx0r39ip3.execute-api.us-east-2.amazonaws.com/hamster-mixpanel'
         self.log_dir = os.path.join(os.path.expanduser("~"), 'hamster_logs')
-
+        self.valid_events = ['Launch JMeter', 'Recent Test Plans', 'Edit JMETER_HOME', 'View Config', 'Restart',
+                             'About', 'Refresh', 'Help']
 
     @property
     def authors_str(self):
@@ -90,6 +92,3 @@ def jmeter_path():
         jmeter_home = jmeter_home.rstrip('/')
     jmeter_bin = jmeter_home + '/bin/jmeter'
     return jmeter_home, jmeter_bin
-
-
-
