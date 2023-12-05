@@ -79,7 +79,7 @@ An app that puts your recent JMeter test plans just a click away from your Mac m
   - No personal information or entities are collected.
   - The data collected is not shared with any third-party.
   - The data collected is not used for any marketing purposes.
-  - The data is being collected using [Mixpanel](https://mixpanel.com).
+  - The data is being collected using [Mixpanel](https://mixpanel.com) via AWS Lambda.
 - You can opt out of telemetry by configuring `false` in `~/.hamster_app.properties` file and restart the app.
   - ```commandline
     [TELEMETRY]
