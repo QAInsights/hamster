@@ -1,10 +1,57 @@
+import os
 import webbrowser
+import logging
+
+from functools import wraps
 
 import rumps
 import subprocess
-from utils import update_properties, show_splash_screen, prechecks, get_recent_jmeter_test_plans, sleep
+from utils import update_properties, show_splash_screen, prechecks, get_recent_jmeter_test_plans, sleep, \
+    get_telemetry_config
 from config import jmeter_path, icon_path, properties_file_path, config_parser, jmeter_plist
-from config import app_config
+from config import app_config, uuid
+
+from mixpanel import Mixpanel
+
+mp = Mixpanel(os.environ.get('MIXPANEL_TOKEN'))
+
+# Create a logger
+logger = logging.getLogger(__name__)
+
+# Set the log level
+logger.setLevel(logging.DEBUG)
+
+# Create a file handler
+handler = logging.FileHandler(os.path.join(app_config.log_dir, 'hamster.log'))
+
+# Create a logging format
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+# Add the handlers to the logger
+logger.addHandler(handler)
+
+
+def track(ids, menu_item):
+    telemetry_enabled = get_telemetry_config()
+
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                if telemetry_enabled:
+                    mp.track(ids, menu_item)
+                    logger.info(f"Clicked {menu_item}")
+                    return func(*args, **kwargs)
+                else:
+                    logger.info(f"Telemetry is disabled. Not tracking {menu_item}")
+                    return func(*args, **kwargs)
+            except Exception as e:
+                logger.error(e)
+
+        return wrapper
+
+    return decorator
 
 
 class DynamicMenuApp(rumps.App):
@@ -56,6 +103,7 @@ class DynamicMenuApp(rumps.App):
             recent_test_plans_menu.add(rumps.MenuItem(test_plan, callback=self.menu_callback))
 
     @rumps.clicked("Refresh")
+    @track(uuid, "Refresh")
     def refresh(self, _):
         """
         Refreshes Test Plans
@@ -63,6 +111,7 @@ class DynamicMenuApp(rumps.App):
         self.refresh_test_plans(1)
 
     @rumps.clicked("Help")
+    @track(uuid, "Help")
     def help(self, _):
         """
         Displays the help screen.
@@ -70,6 +119,7 @@ class DynamicMenuApp(rumps.App):
         show_splash_screen()
 
     @rumps.clicked("View Config")
+    @track(uuid, "View Config")
     def view_config(self, _):
         """
         Displays the configuration of the application.
@@ -81,6 +131,7 @@ class DynamicMenuApp(rumps.App):
             rumps.alert("Error", e)
 
     @rumps.clicked("Edit JMETER_HOME")
+    @track(uuid, "Edit JMETER_HOME")
     def edit_home_path(self, _):
         """
         Allows the user to edit the JMETER_HOME path.
@@ -102,6 +153,7 @@ class DynamicMenuApp(rumps.App):
         except Exception as e:
             rumps.alert("Error", e)
 
+    @track(uuid, "Recent Test Plans")
     def menu_callback(self, sender):
         """
         Callback function for menu items.
@@ -114,6 +166,7 @@ class DynamicMenuApp(rumps.App):
             rumps.alert("Error", e)
 
     @rumps.clicked("Launch JMeter")
+    @track(uuid, "Launch JMeter")
     def just_jmeter(self, _):
         """
         Launches JMeter without any test plan.
@@ -124,6 +177,7 @@ class DynamicMenuApp(rumps.App):
             rumps.alert("Error", e)
 
     @rumps.clicked("Buy me a Coffee")
+    @track(uuid, "Buy me a Coffee")
     def sponsor(self, _):
         """
         Displays information about the application.
@@ -131,6 +185,7 @@ class DynamicMenuApp(rumps.App):
         webbrowser.open_new_tab(app_config.buy_me_a_coffee_url)
 
     @rumps.clicked("About")
+    @track(uuid, "About")
     def about(self, _):
         """
         Displays information about the application.

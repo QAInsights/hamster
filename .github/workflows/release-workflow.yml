@@ -14,23 +14,17 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     env:
-      RELEASE_TAG: 0.1.0
+      RELEASE_TAG: 0.2.0
       INTEL_DMG: Hamster-x86-64-intel.dmg
       ARM64_DMG: Hamster-arm64-silicon.dmg
+      MIXPANEL_TOKEN: ${{ secrets.MIXPANEL_TOKEN }}
 
     strategy:
       matrix:
-#        os: [ windows-latest ]
-#        arch: [ 'X86' ]
         os: [ self-hosted, macos, windows-latest ]
         arch: [ 'X64', 'ARM64', 'X86' ]
 
     steps:
-#    - name: Checkout feature/windows branch
-#      uses: actions/checkout@v3
-#      with:
-#        ref: feature/windows
-
     - uses: actions/checkout@v3
     - name: Set up Python 3.10.11
       uses: actions/setup-python@v3
@@ -45,19 +39,21 @@ jobs:
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
+        python -m pip install --upgrade pip        
         pip install py2app
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       if: matrix.os == 'macos' || matrix.os == 'self-hosted'
 
     - name: Generate app for intel architecture
       run: |
+          export MIXPANEL_TOKEN=${{ env.MIXPANEL_TOKEN }}
           python setup.py py2app
           mv dist dist-intel
       if: matrix.os == 'macos' && matrix.arch == 'X64'
 
     - name: Generate app for arm64 architecture
       run: |
+        export MIXPANEL_TOKEN=${{ env.MIXPANEL_TOKEN }}
         python setup.py py2app
         mv dist dist-arm64
       if: matrix.os == 'self-hosted' && matrix.arch == 'ARM64'
