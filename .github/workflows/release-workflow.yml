@@ -5,7 +5,7 @@ name: Hamster
 
 on:
   push:
-    branches: [ "feature/telemetry" ]
+    branches: [ "main" ]
     paths-ignore:
       - '**/**.md'
 

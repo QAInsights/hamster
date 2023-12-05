@@ -69,7 +69,7 @@ An app that puts your recent JMeter test plans just a click away from your Mac m
 ## 🎯 Points to Note
 
 - **Experimental App**: Please note that this application is experimental and may contain bugs. ⚠️
-- **macOS**: This application is only for macOS. 🍎
+- **macOS**: This application is only for macOS and Windows.
 - **JMeter**: This application requires JMeter to be installed on your machine. 📥
 
 ## 🔍 Telemetry
@@ -80,12 +80,12 @@ An app that puts your recent JMeter test plans just a click away from your Mac m
   - The data collected is not shared with any third-party.
   - The data collected is not used for any marketing purposes.
   - The data is being collected using [Mixpanel](https://mixpanel.com).
-- You can opt out of telemetry by configuring `false` in `~/.hamster_app.properties` file.
+- You can opt out of telemetry by configuring `false` in `~/.hamster_app.properties` file and restart the app.
   - ```commandline
     [TELEMETRY]
     enabled = false
     ```
-- You can opt in of telemetry by configuring `true` in `~/.hamster_app.properties` file.
+- You can opt in of telemetry by configuring `true` in `~/.hamster_app.properties` file and restart the app.
   - ```commandline
     [TELEMETRY]
     enabled = true
@@ -93,15 +93,15 @@ An app that puts your recent JMeter test plans just a click away from your Mac m
 
 ## 🧩 Windows Vs Mac app features
 
-| Features                       | Windows | Mac |
-|--------------------------------|---------|-----|
-| Launch JMeter                  | ✅       | ✅   |
-| Launch JMeter Recent Test Plan | ✅       | ✅   |
-| Edit JMeter Home               | ✅       | ✅   |
-| View Config                    | ✅       | ✅   |
-| Refresh                        | ✅       | ✅   |
-| Telemetry                      | ❌       | ✅   |
-| Updates                       | ❌       | ❌  |
+| Features                        | Windows | Mac |
+|---------------------------------|---------|-----|
+| Launch JMeter                   | ✅       | ✅   |
+| Launch JMeter Recent Test Plans | ✅       | ✅   |
+| Set JMeter Home                 | ✅       | ✅   |
+| View Config                     | ✅       | ✅   |
+| Refresh                         | ✅       | ✅   |
+| Telemetry                       | ❌       | ✅   |
+| Updates                         | ❌       | ❌  |
 
 
 ## 🗒️ License
