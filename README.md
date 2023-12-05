@@ -75,8 +75,20 @@ An app that puts your recent JMeter test plans just a click away from your Mac m
 
 - Hamster collects anonymous usage data to improve the app. 📊
   - The data collected is the menu clicks only.
-- You can opt-out of telemetry by configuring `False` in `~/.hamster_app.properties` file.
-- You can opt-in of telemetry by configuring `True` in `~/.hamster_app.properties` file.
+  - No personal information or entities are collected.
+  - The data collected is not shared with any third-party.
+  - The data collected is not used for any marketing purposes.
+  - The data is being collected using [Mixpanel](https://mixpanel.com).
+- You can opt out of telemetry by configuring `false` in `~/.hamster_app.properties` file.
+  - ```commandline
+    [TELEMETRY]
+    enabled = false
+    ```
+- You can opt in of telemetry by configuring `true` in `~/.hamster_app.properties` file.
+  - ```commandline
+    [TELEMETRY]
+    enabled = true
+    ```
 
 ## 🧩 Windows Vs Mac app features
 
