@@ -40,8 +40,8 @@ def track(ids, menu_item):
                     try:
                         if menu_item in app_config.valid_events:
                             requests.post(app_config.telemetry_url, json={
-                            "uuid": ids,
-                            "menu_item": menu_item
+                                "uuid": ids,
+                                "menu_item": menu_item
                             })
 
                             logger.info(f'Clicked {menu_item}')
@@ -57,6 +57,7 @@ def track(ids, menu_item):
                 logger.error(e)
 
         return wrapper
+
     return decorator
 
 
