@@ -17,7 +17,7 @@ class AppConfig:
         self.menu_items_dict = OrderedDict()
 
         self.jmeter_recent_files_pattern = re.compile("recent_file_.*")
-        self.app_version = "0.1.0"
+        self.app_version = "0.3.0"
         self.buy_me_a_coffee_url = 'https://www.buymeacoffee.com/QAInsights'
         self.authors = ['NaveenKumar Namachivayam', 'Leela Prasad Vadla']
         self.about_website = 'https://QAInsights.com'
