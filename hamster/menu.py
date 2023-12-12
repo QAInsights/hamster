@@ -7,7 +7,7 @@ from functools import wraps
 import rumps
 import subprocess
 from utils import update_properties, show_splash_screen, prechecks, get_recent_jmeter_test_plans, sleep, \
-    get_telemetry_config
+    get_telemetry_config, activate_license, jmeter_pro_features
 from config import jmeter_path, icon_path, properties_file_path, config_parser, jmeter_plist
 from config import app_config, uuid
 
@@ -82,7 +82,7 @@ class DynamicMenuApp(rumps.App):
     def __init__(self, title):
         super(DynamicMenuApp, self).__init__(title, icon=icon_path, quit_button='Quit')
         self.menu = ['Launch JMeter', 'Recent Test Plans', None, 'View Config', 'Edit JMETER_HOME', None,
-                     'Refresh', 'Buy me a Coffee', 'Help', 'About']
+                     'Refresh', 'Activate License', 'Buy me a Coffee', 'Help', 'About']
         self.jmeter_home, self.jmeter_bin = jmeter_path()
         prechecks(jmeter_plist, self.jmeter_home, self.jmeter_bin)
         self.refresh_test_plans(delay=1)
@@ -166,8 +166,20 @@ class DynamicMenuApp(rumps.App):
         Callback function for menu items.
         """
         try:
-            subprocess.Popen([self.jmeter_bin, '-t', sender.title], stdout=subprocess.DEVNULL,
-                             stderr=subprocess.DEVNULL)
+            if jmeter_pro_features():
+                jmeter_all_args = [self.jmeter_bin]
+                for k, v in jmeter_pro_features().items():
+                    jmeter_all_args.append('-' + k)
+                    jmeter_all_args.append(v)
+
+                jmeter_all_args.append('-t')
+                jmeter_all_args.append(sender.title)
+
+                subprocess.Popen(jmeter_all_args, stdout=subprocess.DEVNULL,
+                                 stderr=subprocess.DEVNULL)
+            else:
+                subprocess.Popen([self.jmeter_bin, '-t', sender.title], stdout=subprocess.DEVNULL,
+                                 stderr=subprocess.DEVNULL)
             self.refresh_test_plans()
         except Exception as e:
             rumps.alert("Error", e)
@@ -179,6 +191,15 @@ class DynamicMenuApp(rumps.App):
         Launches JMeter without any test plan.
         """
         try:
+            if jmeter_pro_features():
+                jmeter_all_args = [self.jmeter_bin]
+                for k, v in jmeter_pro_features().items():
+                    jmeter_all_args.append('-' + k)
+                    jmeter_all_args.append(v)
+
+                print(jmeter_all_args)
+                subprocess.Popen(jmeter_all_args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
             subprocess.Popen([self.jmeter_bin], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         except Exception as e:
             rumps.alert("Error", e)
@@ -198,3 +219,28 @@ class DynamicMenuApp(rumps.App):
         Displays information about the application.
         """
         rumps.alert("About", f"{app_config.about_text}\n\n v{app_config.app_version}", icon_path=icon_path)
+
+    @rumps.clicked("Activate License")
+    def activate_license(self, _):
+        """
+        Activates the license
+        """
+        try:
+            window_builder = rumps.Window(message='Enter license key', cancel="Cancel",
+                                          dimensions=(300, 100))
+            window_builder.icon = icon_path
+            window_builder.title = "Activate License"
+            response = window_builder.run()
+
+            if response.clicked:
+                if activate_license(response.text.strip()):
+                    rumps.alert("Success", "License activated successfully!")
+                    logger.info("License activated successfully!")
+                else:
+                    rumps.alert("Activation Failed", """
+                    License activation failed! If you have any questions, please contact the support.
+                    """)
+                    logger.info("License activation failed!")
+
+        except Exception as e:
+            rumps.alert("Error", e)

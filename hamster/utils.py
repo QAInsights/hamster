@@ -1,11 +1,15 @@
+import json
 import logging
 import plistlib
 import time
 import rumps
 import os
+import requests
 from config import app_config
 from pathlib import Path
 from config import properties_file_path, config_parser, jmeter_plist, pattern, icon_path
+from constants.constants import license_enable_url, license_verify_url, mac_product_id
+import keyring
 
 # Create a logger
 logger = logging.getLogger(__name__)
@@ -129,3 +133,54 @@ def get_telemetry_config():
         logging.error(f"{e} Telemetry config not found. Setting telemetry to False.")
         return False
 
+
+def activate_license(license_key):
+    """
+    Activates the license key.
+    """
+    try:
+        headers = {"content-type": "application/json"}
+        data = json.dumps({"license_key": license_key})
+        response = requests.post(license_enable_url, data=data, headers=headers)
+
+        if response.status_code == 200:
+            if response.json()['success']:
+                keyring.set_password("hamster_pro", "license_key", license_key)
+                return True
+        else:
+            return False
+    except Exception as e:
+        logging.error(f"{e} License key not found. Setting license key to None.")
+        return False
+
+
+def get_license_status():
+    """
+    Returns the license status.
+    """
+    if keyring.get_password("hamster_pro", "license_key"):
+        license_key = keyring.get_password("hamster_pro", "license_key")
+        response = requests.post(f"{license_verify_url}", data={
+            "product_id": mac_product_id,
+            "license_key": license_key
+        })
+        logger.info("License check successful.")
+        return response.json()['success']
+    else:
+        logger.info("License check failed.")
+        return False
+
+
+def jmeter_pro_features():
+    """
+    Returns True if the user has a valid license key.
+    """
+    jmeter_additional_properties = {}
+    if get_license_status():
+        jmeter_additional_properties = {}
+        for key, value in dict(config_parser['JMETER']).items():
+            print(key, value)
+            if str(key.lower()) != 'home':
+                jmeter_additional_properties.update({key: value})
+    print("Pro", jmeter_additional_properties)
+    return jmeter_additional_properties
