@@ -1,6 +1,8 @@
 # 🐹 Hamster - Instantly Launch JMeter Test Plans 🚀
 
-An app that puts your recent JMeter test plans just a click away from your Mac menu.
+> ✨ Looking for Hamster Pro version? [Click here](https://qainsights.gumroad.com)
+
+An app that puts your recent JMeter test plans just a click away from your Mac menu or Windows status bar.
 
 ![Hamster (Mac) - Instantly Launch JMeter Test Plans](./assets/Hamster.png)
 ![Hamster (Windows) - Instantly Launch JMeter Test Plans](assets/Hamster-Windows.png)
@@ -16,6 +18,8 @@ An app that puts your recent JMeter test plans just a click away from your Mac m
 - [Telemetry](#-telemetry)
 - [License](#-license)
 - [Sponsor](#-sponsor)
+
+> ✨ Looking for Hamster Pro version? [Click here](https://qainsights.gumroad.com)
 
 # ✅ Features
 - 🎯 No more digging through folders or endless searches. With Hamster, launching your recent JMeter test plans is swift and seamless. Boost your productivity by accessing your tests instantly, streamlining your workflow like never before.
@@ -68,6 +72,8 @@ An app that puts your recent JMeter test plans just a click away from your Mac m
 7. Configure `JMETER_HOME` by launching `Hamster > Edit JMETER_HOME` ⚙️
 8. To launch JMeter, click on `Hamster > Just JMeter` 🚀
 
+> ✨ Looking for Hamster Pro version? [Click here](https://qainsights.gumroad.com)
+
 ## 🎯 Points to Note
 
 - **Experimental App**: Please note that this application is experimental and may contain bugs. ⚠️
@@ -92,6 +98,8 @@ An app that puts your recent JMeter test plans just a click away from your Mac m
     [TELEMETRY]
     enabled = true
     ```
+
+> ✨ Looking for Hamster Pro version? [Click here](https://qainsights.gumroad.com)
 
 ## 🧩 Windows Vs Mac app features
 
