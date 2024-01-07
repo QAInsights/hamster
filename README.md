@@ -2,7 +2,9 @@
 
 An app that puts your recent JMeter test plans just a click away from your Mac menu.
 
-![Hamster - Instantly Launch JMeter Test Plans](./assets/Hamster.png)
+![Hamster (Mac) - Instantly Launch JMeter Test Plans](./assets/Hamster.png)
+![Hamster (Windows) - Instantly Launch JMeter Test Plans](assets/Hamster-Windows.png)
+
 
 ## Table of Contents
 
